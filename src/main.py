@@ -1,3 +1,7 @@
+"""
+Author: Huzaifa Syed
+"""
+
 import pygame
 import os
 
