@@ -10,6 +10,12 @@ CLOCK = pygame.time.Clock()
 FPS = 60
 
 
+""" AUDIO """
+UI_SFX = pygame.mixer.Sound(os.path.join('Assets', 'SFX', '002-navigation.wav'))
+UI_SFX.set_volume(0.3)
+
+
+
 """ SPRITES """
 
 BG_SPRITES = [

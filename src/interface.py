@@ -8,6 +8,10 @@ class Window:
         self.y_acceleration = 0.60
         self.background_width = BACKGROUND[0].get_rect().width
 
+        self.menu_buttons = [
+            Button(BUTTON[0], BUTTON[1], (290, 65), (300, 236), (295, 220), 37, 'large')
+        ]
+
     
     def render_menu_title(self) -> None:
         """ renders main menu title """
@@ -38,8 +42,8 @@ class Window:
         self.x_velocity -= self.x_acceleration
 
         self.render_menu_title()
+        self.menu_buttons[0].render()
 
-        Button(BUTTON[0], BUTTON[1], (290, 65), (300, 236), (295, 220), 37, 'large').render()
 
 
 class Button:
@@ -58,6 +62,7 @@ class Button:
         self.pointer_size = pointer_size
 
         self.clicked = False
+        self.play_sound = True
     
 
     def input(self) -> None:
@@ -66,7 +71,11 @@ class Button:
         mouse_pos = pygame.mouse.get_pos()
         if self.button.collidepoint(mouse_pos):  # checks if mouse is on button
             self.image = self.selected
-                        
+            
+            if self.play_sound:
+                UI_SFX.play()
+                self.play_sound = False
+
             if self.pointer_size == 'large':
                 WINDOW.blit(POINTER[0], (self.pointer_x, self.pointer_y))
             
@@ -84,8 +93,9 @@ class Button:
         else:
             self.image = self.reset
             self.clicked = False
+            self.play_sound = True
+            
     
-
     def render(self) -> None:
         """ renders button """
 
