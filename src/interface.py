@@ -43,6 +43,7 @@ class Window:
 
         self.render_menu_title()
         self.menu_buttons[0].render()
+        Music().set_sfx_volume(True)
 
 
 
@@ -73,8 +74,8 @@ class Button:
             self.image = self.selected
             
             if self.play_sound:
-                UI_SFX.play()
                 self.play_sound = False
+                UI_SFX.play()
 
             if self.pointer_size == 'large':
                 WINDOW.blit(POINTER[0], (self.pointer_x, self.pointer_y))
@@ -85,9 +86,10 @@ class Button:
             # checks for mouse clicks whilst over button
             if pygame.mouse.get_pressed()[0]:
                 self.clicked = True
-            
+                
             elif self.clicked:
                 self.clicked = False
+                UI_CLICK_SFX.play()
         
         # unhighlights image
         else:
@@ -101,4 +103,32 @@ class Button:
 
         self.input()
         WINDOW.blit(self.image, self.img_pos)
+
+
+class Music:
+
+    def __init__(self) -> None:
+        self.is_playing = pygame.mixer.music.get_busy()
+        self.volume = [0.2, 0.2]
+        self.sfx = [
+            UI_SFX,
+            UI_CLICK_SFX
+        ]
+
+    def play_track(self):
+
+        pygame.mixer.music.load((os.path.join('assets', 'sfx', '001-bgm.wav')))
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.1)
+
     
+
+    def set_sfx_volume(self, sfx_enabled):
+
+        if not sfx_enabled:
+            for file in self.sfx:
+                file.set_volume(0)
+        
+        else:
+            for i, file in enumerate(self.sfx):
+                file.set_volume(self.volume[i])

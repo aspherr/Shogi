@@ -15,9 +15,13 @@ pygame.display.set_caption("SHOGI")
 class Main:
     def __init__(self) -> None:
         self.window = Window()
+        self.music = Music()
 
     def main(self) -> None:
         "Main function"
+
+        if self.music.is_playing is False:
+            self.music.play_track()
 
         running = True
         while running:

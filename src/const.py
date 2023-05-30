@@ -11,9 +11,8 @@ FPS = 60
 
 
 """ AUDIO """
-UI_SFX = pygame.mixer.Sound(os.path.join('Assets', 'SFX', '002-navigation.wav'))
-UI_SFX.set_volume(0.3)
-
+UI_SFX = pygame.mixer.Sound(os.path.join('assets', 'sfx', '002-navigation.wav'))
+UI_CLICK_SFX = pygame.mixer.Sound(os.path.join('assets', 'sfx', '002-navigation-click.wav'))
 
 
 """ SPRITES """
