@@ -37,7 +37,14 @@ TITLE = [pygame.image.load(
 BUTTON_SPRITES = [
     "001-01-start",
     "001-02-start",
-    "002-01-manual"
+    "002-01-manual",
+    "002-01-manual",
+    "003-01-options",
+    "003-02-options",
+    "004-01-exit",
+    "004-02-exit",
+    "005-01-credits",
+    "005-02-credits"
 ]
 BUTTON = [pygame.image.load(
                 os.path.join('assets', 'sprites', 'menu', 'buttons', f'{img}.png')) 

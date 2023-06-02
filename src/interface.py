@@ -9,7 +9,11 @@ class Window:
         self.background_width = BACKGROUND[0].get_rect().width
 
         self.menu_buttons = [
-            Button(BUTTON[0], BUTTON[1], (290, 65), (300, 236), (295, 220), 37, 'large')
+            Button(BUTTON[0], BUTTON[1], (290, 65), (300, 236), (295, 220), 37, 'large'),
+            Button(BUTTON[2], BUTTON[3], (290, 65), (300, 347), (295, 330), 37, 'large'),
+            Button(BUTTON[4], BUTTON[5], (290, 65), (300, 457), (295, 440), 37, 'large'),
+            Button(BUTTON[6], BUTTON[7], (215, 65), (338, 567), (294, 550), 37, 'large'),
+            Button(BUTTON[8], BUTTON[9], (130, 40), (740, 622), (715, 612), 35, 'small')
         ]
 
     
@@ -42,7 +46,10 @@ class Window:
         self.x_velocity -= self.x_acceleration
 
         self.render_menu_title()
-        self.menu_buttons[0].render()
+
+        for button in self.menu_buttons:
+            button.render()
+        
         Music().set_sfx_volume(True)
 
 
