@@ -25,11 +25,9 @@ class Main:
 
         running = True
         while running:
-            self.window.render_home_window()
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+            self.window.render_home_window()
+            self.window.menu_input(running)
                 
             pygame.display.update()
             CLOCK.tick(FPS)

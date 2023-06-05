@@ -7,6 +7,7 @@ class Window:
         self.x_acceleration = 2
         self.y_acceleration = 0.60
         self.background_width = BACKGROUND[0].get_rect().width
+        self.window_name = 'menu'
 
         self.menu_buttons = [
             Button(BUTTON[0], BUTTON[1], (290, 65), (300, 236), (295, 220), 37, 'large'),
@@ -16,22 +17,14 @@ class Window:
             Button(BUTTON[8], BUTTON[9], (130, 40), (740, 622), (715, 612), 35, 'small')
         ]
 
+        self.pregame_buttons = [
+            Button(BUTTON[10], BUTTON[11], (290, 82), (300, 275), (295, 220), 37, 'large'),
+            Button(BUTTON[12], BUTTON[13], (290, 82), (300, 293), (295, 350), 37, 'large'),
+            Button(BUTTON[14], BUTTON[15], (290, 82), (300, 275), (295, 220), 37, 'large'),
+            Button(BUTTON[16], BUTTON[17], (290, 82), (300, 293), (295, 350), 37, 'large')
+        ]
+
     
-    def render_menu_title(self) -> None:
-        """ renders main menu title """
-        
-        # renders the title sprite onto the window
-        WINDOW.blit(TITLE[0], (195, self.y_velocity+15))
-        self.y_velocity += self.y_acceleration
-
-        # title animation
-        if self.y_velocity > 15:
-            self.y_acceleration = -0.60
-        
-        elif self.y_velocity < -15:
-            self.y_acceleration = 0.60
-
-
     def render_home_window(self) -> None:
         """ renders pygame window and blits sprites onto window """
 
@@ -45,13 +38,63 @@ class Window:
          
         self.x_velocity -= self.x_acceleration
 
-        self.render_menu_title()
+        self.render_title()
 
         for button in self.menu_buttons:
             button.render()
         
         Music().set_sfx_volume(True)
+        
 
+    def title_index(self) -> int:
+
+        match self.window_name:
+            case 'menu':
+                return 0
+            
+    
+    def render_title(self) -> None:
+        """ renders main menu title """
+        
+        # renders the title sprite onto the window
+        WINDOW.blit(TITLE[self.title_index()], (195, self.y_velocity+15))
+        self.y_velocity += self.y_acceleration
+
+        # title animation
+        if self.y_velocity > 15:
+            self.y_acceleration = -0.60
+        
+        elif self.y_velocity < -15:
+            self.y_acceleration = 0.60
+    
+
+    def menu_input(self, running):
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                running = False
+                pygame.quit()
+            
+            self.menu_buttons[0].input()
+            if event.type == pygame.MOUSEBUTTONDOWN and self.menu_buttons[0].clicked:
+                print("menu")
+            
+            self.menu_buttons[1].input()
+            if event.type == pygame.MOUSEBUTTONDOWN and self.menu_buttons[1].clicked:
+                print("manual")
+            
+            self.menu_buttons[2].input()
+            if event.type == pygame.MOUSEBUTTONDOWN and self.menu_buttons[2].clicked:
+                print("options")
+
+            self.menu_buttons[3].input()
+            if event.type == pygame.MOUSEBUTTONDOWN and self.menu_buttons[3].clicked:
+                print("exit")
+            
+            self.menu_buttons[4].input()
+            if event.type == pygame.MOUSEBUTTONDOWN and self.menu_buttons[4].clicked:
+                print("credits")
 
 
 class Button:
@@ -93,7 +136,7 @@ class Button:
             # checks for mouse clicks whilst over button
             if pygame.mouse.get_pressed()[0]:
                 self.clicked = True
-                
+            
             elif self.clicked:
                 self.clicked = False
                 UI_CLICK_SFX.play()
@@ -107,8 +150,6 @@ class Button:
     
     def render(self) -> None:
         """ renders button """
-
-        self.input()
         WINDOW.blit(self.image, self.img_pos)
 
 
@@ -129,7 +170,6 @@ class Music:
         pygame.mixer.music.set_volume(0.1)
 
     
-
     def set_sfx_volume(self, sfx_enabled):
 
         if not sfx_enabled:
