@@ -14,7 +14,7 @@ pygame.display.set_caption("SHOGI")
 
 class Main:
     def __init__(self) -> None:
-        self.window = Window()
+        self.menu = Menu()
         self.music = Music()
 
     def main(self) -> None:
@@ -26,8 +26,14 @@ class Main:
         running = True
         while running:
 
-            self.window.render_home_window()
-            self.window.menu_input(running)
+            self.menu.window()
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                    exit()
+                
+                self.menu.input(event)
                 
             pygame.display.update()
             CLOCK.tick(FPS)

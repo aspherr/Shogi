@@ -1,15 +1,16 @@
 from const import *
 
-class Window:
+class Menu:
     def __init__(self) -> None:
+        self.pregame = Pregame()
+        
         self.x_velocity = 0
         self.y_velocity = 0
         self.x_acceleration = 2
         self.y_acceleration = 0.60
         self.background_width = BACKGROUND[0].get_rect().width
-        self.window_name = 'menu'
 
-        self.menu_buttons = [
+        self.buttons = [
             Button(BUTTON[0], BUTTON[1], (290, 65), (300, 236), (295, 220), 37, 'large'),
             Button(BUTTON[2], BUTTON[3], (290, 65), (300, 347), (295, 330), 37, 'large'),
             Button(BUTTON[4], BUTTON[5], (290, 65), (300, 457), (295, 440), 37, 'large'),
@@ -17,15 +18,23 @@ class Window:
             Button(BUTTON[8], BUTTON[9], (130, 40), (740, 622), (715, 612), 35, 'small')
         ]
 
-        self.pregame_buttons = [
-            Button(BUTTON[10], BUTTON[11], (290, 82), (300, 275), (295, 220), 37, 'large'),
-            Button(BUTTON[12], BUTTON[13], (290, 82), (300, 293), (295, 350), 37, 'large'),
-            Button(BUTTON[14], BUTTON[15], (290, 82), (300, 275), (295, 220), 37, 'large'),
-            Button(BUTTON[16], BUTTON[17], (290, 82), (300, 293), (295, 350), 37, 'large')
-        ]
+            
+    def render_title(self) -> None:
+        """ renders main menu title """
+        
+        # renders the title sprite onto the window
+        WINDOW.blit(TITLE[0], (195, self.y_velocity+15))
+        self.y_velocity += self.y_acceleration
+
+        # title animation
+        if self.y_velocity > 15:
+            self.y_acceleration = -0.60
+        
+        elif self.y_velocity < -15:
+            self.y_acceleration = 0.60
 
     
-    def render_home_window(self) -> None:
+    def window(self) -> None:
         """ renders pygame window and blits sprites onto window """
 
         # Animation for the home menu background
@@ -40,75 +49,138 @@ class Window:
 
         self.render_title()
 
-        for button in self.menu_buttons:
+        for button in self.buttons:
             button.render()
         
         Music().set_sfx_volume(True)
-        
-
-    def title_index(self) -> int:
-
-        match self.window_name:
-            case 'menu':
-                return 0
-            
-    
-    def render_title(self) -> None:
-        """ renders main menu title """
-        
-        # renders the title sprite onto the window
-        WINDOW.blit(TITLE[self.title_index()], (195, self.y_velocity+15))
-        self.y_velocity += self.y_acceleration
-
-        # title animation
-        if self.y_velocity > 15:
-            self.y_acceleration = -0.60
-        
-        elif self.y_velocity < -15:
-            self.y_acceleration = 0.60
     
 
-    def menu_input(self, running):
+    def input(self, event):
+        
+        self.buttons[0].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[0].clicked:
+            UI_CLICK_SFX.play()
+            self.pregame.opponent_window()
+        
+        self.buttons[1].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[1].clicked:
+            UI_CLICK_SFX.play()
 
-        for event in pygame.event.get():
+        self.buttons[2].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[2].clicked:
+            UI_CLICK_SFX.play()
 
-            if event.type == pygame.QUIT:
-                running = False
-                pygame.quit()
-            
-            self.menu_buttons[0].input()
-            if event.type == pygame.MOUSEBUTTONDOWN and self.menu_buttons[0].clicked:
-                print("menu")
-            
-            self.menu_buttons[1].input()
-            if event.type == pygame.MOUSEBUTTONDOWN and self.menu_buttons[1].clicked:
-                print("manual")
-            
-            self.menu_buttons[2].input()
-            if event.type == pygame.MOUSEBUTTONDOWN and self.menu_buttons[2].clicked:
-                print("options")
+        self.buttons[3].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[3].clicked:
+            UI_CLICK_SFX.play()
+            quit()
+        
+        self.buttons[4].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[4].clicked:
+            UI_CLICK_SFX.play()
 
-            self.menu_buttons[3].input()
-            if event.type == pygame.MOUSEBUTTONDOWN and self.menu_buttons[3].clicked:
-                print("exit")
-            
-            self.menu_buttons[4].input()
-            if event.type == pygame.MOUSEBUTTONDOWN and self.menu_buttons[4].clicked:
-                print("credits")
 
+class Pregame:
+
+    def __init__(self) -> None:
+        self.buttons = [
+            Button(BUTTON[10], BUTTON[11], (290, 82), (300, 275), (295, 220), 37, 'large'),
+            Button(BUTTON[12], BUTTON[13], (290, 82), (300, 405), (295, 350), 37, 'large'),
+            Button(BUTTON[14], BUTTON[15], (290, 82), (300, 275), (295, 220), 37, 'large'),
+            Button(BUTTON[16], BUTTON[17], (290, 82), (300, 405), (295, 350), 37, 'large')
+        ]
+
+        self.opponent = ''
+        self.colour = ''
+    
+    
+    def opponent_window(self) -> None:
+
+        running = True
+        while running:
+            WINDOW.blit(BACKGROUND[1], (0, 0))
+
+            for i in range(2):
+                self.buttons[i].render()
+            
+            Music().set_sfx_volume(True)
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    running = False
+                    exit()
+                
+                self.opponent_window_input(event)
+
+            pygame.display.update()
+            CLOCK.tick(FPS)
+    
+
+    def colour_window(self) -> None:
+
+        running = True
+        while running:
+            WINDOW.blit(BACKGROUND[1], (0, 0))
+
+            for i in range(2):
+                self.buttons[i+2].render()
+
+            Music().set_sfx_volume(True)
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    running = False
+                    exit()
+                
+                self.colour_window_input(event)
+
+            pygame.display.update()
+            CLOCK.tick(FPS)
+
+
+    def opponent_window_input(self, event) -> None:
+        
+        self.buttons[0].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[0].clicked:
+            UI_CLICK_SFX.play()
+            self.opponent = 'engine'
+            self.colour_window()
+            
+
+        self.buttons[1].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[1].clicked:
+            UI_CLICK_SFX.play()
+            self.opponent = 'player'
+            self.colour_window()
+        
+    
+    def colour_window_input(self, event) -> None:
+
+        self.buttons[2].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[2].clicked:
+            UI_CLICK_SFX.play()
+            self.colour = 'sente'
+
+        self.buttons[3].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[3].clicked:
+            UI_CLICK_SFX.play()
+            self.colour = 'gote'
+        
 
 class Button:
 
-    def __init__(self, unselected_img, selected_img, dimensions, pos, 
+    def __init__(self, unselected_img, selected_img, dimensions, rect_pos, 
                  img_pos, img_center, pointer_size) -> None:
         
-        self.button = pygame.Rect(pos, dimensions)
+        self.button = pygame.Rect(rect_pos, dimensions)
         self.image = unselected_img
         self.selected = selected_img
         self.reset = unselected_img
         self.img_pos = img_pos
 
-        self.pointer_x = pos[0]-80
+        self.pointer_x = rect_pos[0]-80
         self.pointer_y = self.button.center[1] - (img_center-5)
         self.pointer_size = pointer_size
 
@@ -139,8 +211,7 @@ class Button:
             
             elif self.clicked:
                 self.clicked = False
-                UI_CLICK_SFX.play()
-        
+            
         # unhighlights image
         else:
             self.image = self.reset
@@ -150,6 +221,8 @@ class Button:
     
     def render(self) -> None:
         """ renders button """
+
+        self.input()
         WINDOW.blit(self.image, self.img_pos)
 
 
