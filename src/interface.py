@@ -3,6 +3,7 @@ from const import *
 class Menu:
     def __init__(self) -> None:
         self.pregame = Pregame()
+        self.credits = Credits()
         
         self.x_velocity = 0
         self.y_velocity = 0
@@ -36,23 +37,36 @@ class Menu:
     
     def window(self) -> None:
         """ renders pygame window and blits sprites onto window """
-
-        # Animation for the home menu background
-        scroll_velocity = self.x_velocity % self.background_width
-        WINDOW.blit(BACKGROUND[0], (scroll_velocity - self.background_width, 0))
-
-        # If image passes this pixel count, new image is stiched to the end
-        if scroll_velocity < 1767:  
-            WINDOW.blit(BACKGROUND[0], (scroll_velocity, 0))
-         
-        self.x_velocity -= self.x_acceleration
-
-        self.render_title()
-
-        for button in self.buttons:
-            button.render()
         
-        Music().set_sfx_volume(True)
+        running = True
+        while running:
+
+            # Animation for the home menu background
+            scroll_velocity = self.x_velocity % self.background_width
+            WINDOW.blit(BACKGROUND[0], (scroll_velocity - self.background_width, 0))
+
+            # If image passes this pixel count, new image is stiched to the end
+            if scroll_velocity < 1767:  
+                WINDOW.blit(BACKGROUND[0], (scroll_velocity, 0))
+                
+            self.x_velocity -= self.x_acceleration
+
+            self.render_title()
+
+            for button in self.buttons:
+                button.render()
+            
+            Music().set_sfx_volume(True)
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                    exit()
+                
+                self.input(event)
+                
+            pygame.display.update()
+            CLOCK.tick(FPS)
     
 
     def input(self, event):
@@ -78,6 +92,7 @@ class Menu:
         self.buttons[4].input()
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[4].clicked:
             UI_CLICK_SFX.play()
+            self.credits.window(self.window)
 
 
 class Pregame:
@@ -167,7 +182,73 @@ class Pregame:
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[3].clicked:
             UI_CLICK_SFX.play()
             self.colour = 'gote'
+
+
+class Credits:
+
+    def __init__(self) -> None:
+        self.y_velocity = 30
+        self.y_acceleration = 1
+
+        self.button = Button(POINTER[3], POINTER[4], (55, 55), (30, 610), (30, 610), 0, 'none')
+
+
+    def render_title(self) -> None:
+
+        WINDOW.blit(TITLE[1], (240, self.y_velocity+30))
+        self.y_velocity += self.y_acceleration
+
+        if self.y_velocity > 15:
+            self.y_acceleration = -0.60
         
+        elif self.y_velocity < -15:
+            self.y_acceleration = 0.60
+    
+
+    def render_text(self) -> None:
+
+        message_1 = FONT_1.render("THANK YOU FOR PLAYING!", 1, WHITE)
+        message_2 = FONT_1.render("THIS PROJECT WAS CREATED BY:", 1, WHITE)
+        message_3 = FONT_1.render("HUZAIFA SYED", 1, WHITE)
+        message_4 = FONT_1.render("GITHUB: aspherr_", 1, WHITE)
+
+        WINDOW.blit(message_1, (150, 180))
+        WINDOW.blit(message_2, (60, 310))
+        WINDOW.blit(message_3, (270, 390))
+        WINDOW.blit(message_4, (230, 530))
+        
+        self.button.render()
+
+    
+    def window(self, menu) -> None:
+
+        running = True
+        while running:
+            WINDOW.blit(BACKGROUND[1], (0, 0))
+            self.render_title()
+            self.render_text()
+            
+            Music().set_sfx_volume(True)
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    running = False
+                    exit()
+                
+                self.input(event, menu)
+                
+            pygame.display.update()
+            CLOCK.tick(FPS)
+
+
+    def input(self, event, menu) -> None:
+        
+        self.button.input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.button.clicked:
+            UI_CLICK_SFX.play()
+            menu()
+            
 
 class Button:
 
@@ -202,7 +283,7 @@ class Button:
             if self.pointer_size == 'large':
                 WINDOW.blit(POINTER[0], (self.pointer_x, self.pointer_y))
             
-            else:
+            elif self.pointer_size == 'small':
                 WINDOW.blit(POINTER[1], (self.pointer_x+20, self.pointer_y+4))
             
             # checks for mouse clicks whilst over button

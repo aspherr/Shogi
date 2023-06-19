@@ -10,6 +10,10 @@ CLOCK = pygame.time.Clock()
 FPS = 60
 
 
+""" COLOURS """
+WHITE = (220, 220, 220)
+
+
 """ AUDIO """
 UI_SFX = pygame.mixer.Sound(os.path.join('assets', 'sfx', '002-navigation.wav'))
 UI_CLICK_SFX = pygame.mixer.Sound(os.path.join('assets', 'sfx', '002-navigation-click.wav'))
@@ -27,7 +31,8 @@ BACKGROUND = [pygame.image.load(
 
 
 TITLE_SPRITES = [
-    "003-main-title"
+    "003-main-title",
+    "006-credits-title"
 ]
 TITLE = [pygame.image.load(
                 os.path.join('assets', 'sprites', 'menu', 'home', f'{img}.png')) 
@@ -73,3 +78,9 @@ POINTER_SPRITES = [
 POINTER = [pygame.image.load(
                 os.path.join('assets', 'sprites', 'menu', 'pointers', f'{img}.png')) 
                 for img in POINTER_SPRITES]
+
+
+""" FONTS """
+
+FONT_1 = pygame.font.SysFont('Savior', 80)
+FONT_2 = pygame.font.SysFont('Savior', 50)

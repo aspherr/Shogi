@@ -23,20 +23,7 @@ class Main:
         if self.music.is_playing is False:
             self.music.play_track()
 
-        running = True
-        while running:
-
-            self.menu.window()
-            
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                    exit()
-                
-                self.menu.input(event)
-                
-            pygame.display.update()
-            CLOCK.tick(FPS)
+        self.menu.window()
 
         
 if __name__ == "__main__":
