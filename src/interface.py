@@ -74,7 +74,7 @@ class Menu:
         self.buttons[0].input()
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[0].clicked:
             UI_CLICK_SFX.play()
-            self.pregame.opponent_window()
+            self.pregame.opponent_window(self.window)
         
         self.buttons[1].input()
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[1].clicked:
@@ -99,6 +99,7 @@ class Pregame:
 
     def __init__(self) -> None:
         self.buttons = [
+            Button(POINTER[3], POINTER[4], (55, 55), (30, 610), (30, 610), 0, 'none'),
             Button(BUTTON[10], BUTTON[11], (290, 82), (300, 275), (295, 220), 37, 'large'),
             Button(BUTTON[12], BUTTON[13], (290, 82), (300, 405), (295, 350), 37, 'large'),
             Button(BUTTON[14], BUTTON[15], (290, 82), (300, 275), (295, 220), 37, 'large'),
@@ -121,42 +122,51 @@ class Pregame:
         WINDOW.blit(message, (200, 150))
     
 
-    def opponent_window_input(self, event) -> None:
-        
+    def opponent_window_input(self, event, menu) -> None:
+
         self.buttons[0].input()
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[0].clicked:
             UI_CLICK_SFX.play()
-            self.opponent = 'engine'
-            self.colour_window()
-            
-
+            menu()
+        
         self.buttons[1].input()
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[1].clicked:
             UI_CLICK_SFX.play()
-            self.opponent = 'player'
-            self.colour_window()
-        
-        
-    def colour_window_input(self, event) -> None:
-
+            self.opponent = 'engine'
+            self.colour_window(menu)
+            
         self.buttons[2].input()
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[2].clicked:
             UI_CLICK_SFX.play()
-            self.colour = 'sente'
+            self.opponent = 'player'
+            self.colour_window(menu)
+        
+
+    def colour_window_input(self, event, menu) -> None:
+
+        self.buttons[0].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[0].clicked:
+            UI_CLICK_SFX.play()
+            self.opponent_window(menu)
 
         self.buttons[3].input()
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[3].clicked:
             UI_CLICK_SFX.play()
+            self.colour = 'sente'
+
+        self.buttons[4].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[4].clicked:
+            UI_CLICK_SFX.play()
             self.colour = 'gote'
 
 
-    def opponent_window(self) -> None:
+    def opponent_window(self, menu) -> None:
 
         running = True
         while running:
             WINDOW.blit(BACKGROUND[1], (0, 0))
 
-            for i in range(2):
+            for i in range(3):
                 self.buttons[i].render()
             
             self.render_opponent_text()
@@ -169,18 +179,19 @@ class Pregame:
                     running = False
                     exit()
                 
-                self.opponent_window_input(event)
+                self.opponent_window_input(event, menu)
 
             pygame.display.update()
             CLOCK.tick(FPS)
     
 
-    def colour_window(self) -> None:
+    def colour_window(self, menu) -> None:
 
         running = True
         while running:
             WINDOW.blit(BACKGROUND[1], (0, 0))
 
+            self.buttons[0].render()
             for i in range(2):
                 self.buttons[i+2].render()
             
@@ -194,7 +205,7 @@ class Pregame:
                     running = False
                     exit()
                 
-                self.colour_window_input(event)
+                self.colour_window_input(event, menu)
 
             pygame.display.update()
             CLOCK.tick(FPS)
