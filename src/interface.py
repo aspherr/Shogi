@@ -3,6 +3,7 @@ from const import *
 class Menu:
     def __init__(self) -> None:
         self.pregame = Pregame()
+        self.options = Options()
         self.credits = Credits()
         
         self.x_velocity = 0
@@ -83,6 +84,7 @@ class Menu:
         self.buttons[2].input()
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[2].clicked:
             UI_CLICK_SFX.play()
+            self.options.window()
 
         self.buttons[3].input()
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[3].clicked:
@@ -211,6 +213,55 @@ class Pregame:
             CLOCK.tick(FPS)
 
 
+class Options:
+
+    def __init__(self) -> None:
+        self.y_velocity = 30
+        self.y_acceleration = 1
+
+
+    def render_title(self) -> None:
+
+        WINDOW.blit(TITLE[1], (240, self.y_velocity+30))
+        self.y_velocity += self.y_acceleration
+
+        if self.y_velocity > 15:
+            self.y_acceleration = -0.60
+        
+        elif self.y_velocity < -15:
+            self.y_acceleration = 0.60
+    
+
+    def render_text(self) -> None:
+        pass
+
+    
+    def window(self) -> None:
+
+        running = True
+        while running:
+            WINDOW.blit(BACKGROUND[1], (0, 0))
+            self.render_title()
+            self.render_text()
+            
+            Music().set_sfx_volume(True)
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    running = False
+                    exit()
+                
+                self.input(event)
+                
+            pygame.display.update()
+            CLOCK.tick(FPS)
+
+
+    def input(self, event) -> None:
+        pass
+            
+
 class Credits:
 
     def __init__(self) -> None:
@@ -222,7 +273,7 @@ class Credits:
 
     def render_title(self) -> None:
 
-        WINDOW.blit(TITLE[1], (240, self.y_velocity+30))
+        WINDOW.blit(TITLE[2], (240, self.y_velocity+30))
         self.y_velocity += self.y_acceleration
 
         if self.y_velocity > 15:

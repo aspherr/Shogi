@@ -32,6 +32,7 @@ BACKGROUND = [pygame.image.load(
 
 TITLE_SPRITES = [
     "003-main-title",
+    "005-options-title",
     "006-credits-title"
 ]
 TITLE = [pygame.image.load(
