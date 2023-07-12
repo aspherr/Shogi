@@ -1,4 +1,5 @@
 from const import *
+from time import sleep
 
 class Menu:
     def __init__(self) -> None:
@@ -57,8 +58,6 @@ class Menu:
             for button in self.buttons:
                 button.render()
             
-            Music().set_sfx_volume(True)
-            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -84,11 +83,12 @@ class Menu:
         self.buttons[2].input()
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[2].clicked:
             UI_CLICK_SFX.play()
-            self.options.window()
+            self.options.window(self.window)
 
         self.buttons[3].input()
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[3].clicked:
             UI_CLICK_SFX.play()
+            sleep(0.05)
             quit()
         
         self.buttons[4].input()
@@ -172,9 +172,7 @@ class Pregame:
                 self.buttons[i].render()
             
             self.render_opponent_text()
-            
-            Music().set_sfx_volume(True)
-
+        
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
@@ -199,8 +197,6 @@ class Pregame:
             
             self.render_colour_text()
 
-            Music().set_sfx_volume(True)
-
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
@@ -216,71 +212,126 @@ class Pregame:
 class Options:
 
     def __init__(self) -> None:
-        self.y_velocity = 30
-        self.y_acceleration = 1
+        self.music = Music()
+        self.y_velocity = 9
+        self.y_acceleration = -0.50
+
+        self.buttons = [
+            Button(POINTER[3], POINTER[4], (55, 55), (30, 610), (30, 610), 0, 'none'),
+            Button(BUTTON[18], BUTTON[19], (300, 300), (110, 200), (110, 200), 0, 'none'),
+            Button(BUTTON[20], BUTTON[21], (300, 300), (490, 200), (490, 200), 0, 'none')
+        ]
+
+        self.play_sfx = True
+        self.play_music = False
+
+        self.sfx_status = 'ON'
+        self.music_status = 'ON'
 
 
     def render_title(self) -> None:
 
-        WINDOW.blit(TITLE[1], (240, self.y_velocity+30))
-        self.y_velocity += self.y_acceleration
-
-        if self.y_velocity > 15:
-            self.y_acceleration = -0.60
+        WINDOW.blit(TITLE[1], (250, self.y_velocity+30))
+    
+        if self.y_velocity >= 10:
+            self.y_acceleration = -0.50
         
-        elif self.y_velocity < -15:
-            self.y_acceleration = 0.60
+        elif self.y_velocity <= -10:
+            self.y_acceleration = 0.50
+        
+        self.y_velocity += self.y_acceleration
     
 
     def render_text(self) -> None:
-        pass
+        
+        sfx_text = FONT_1.render("SFX: " + self.sfx_status, 1, WHITE)
+        WINDOW.blit(sfx_text, (160, 500))
+        
+        music_text = FONT_1.render("MUSIC: " + self.music_status, 1, WHITE)
+        WINDOW.blit(music_text, (520, 500))
+
 
     
-    def window(self) -> None:
+    def window(self, menu) -> None:
 
         running = True
         while running:
             WINDOW.blit(BACKGROUND[1], (0, 0))
             self.render_title()
             self.render_text()
-            
-            Music().set_sfx_volume(True)
 
+            for i in range(len(self.buttons)):
+                self.buttons[i].render()
+            
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
                     running = False
                     exit()
                 
-                self.input(event)
+                self.input(event, menu)
                 
             pygame.display.update()
             CLOCK.tick(FPS)
 
 
-    def input(self, event) -> None:
-        pass
+    def input(self, event, menu) -> None:
+
+        self.buttons[0].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[0].clicked:
+            UI_CLICK_SFX.play()
+            menu()
+        
+        self.buttons[1].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[1].clicked:
+
+            if self.play_sfx is False:
+                UI_CLICK_SFX.set_volume(0.2)
+                UI_CLICK_SFX.play()
+                self.sfx_status = "ON"
+            
+            else:
+                UI_CLICK_SFX.play()
+                self.sfx_status = "OFF"
+                sleep(0.05)
+
+            self.play_sfx = not self.play_sfx
+            self.music.set_sfx_volume(self.play_sfx)
+
+        self.buttons[2].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[2].clicked:
+            UI_CLICK_SFX.play()
+
+            if self.play_music is False:
+                self.music_status = "OFF"
+            
+            else:
+                self.music_status = "ON"
+
+            self.play_music = not self.play_music
+            self.music.play_track(self.play_music)
             
 
 class Credits:
 
     def __init__(self) -> None:
-        self.y_velocity = 30
-        self.y_acceleration = 1
+        self.y_velocity = 10
+        self.y_acceleration = -0.50
 
         self.button = Button(POINTER[3], POINTER[4], (55, 55), (30, 610), (30, 610), 0, 'none')
 
 
     def render_title(self) -> None:
 
-        WINDOW.blit(TITLE[2], (240, self.y_velocity+30))
-        self.y_velocity += self.y_acceleration
+        WINDOW.blit(TITLE[2], (250, self.y_velocity+30))
 
-        if self.y_velocity > 15:
-            self.y_acceleration = -0.60
+        if self.y_velocity >= 10:
+            self.y_acceleration = -0.50
         
-        elif self.y_velocity < -15:
-            self.y_acceleration = 0.60
+        elif self.y_velocity <= -10:
+            self.y_acceleration = 0.50
+        
+        self.y_velocity += self.y_acceleration
     
 
     def render_text(self) -> None:
@@ -306,8 +357,6 @@ class Credits:
             self.render_title()
             self.render_text()
             
-            Music().set_sfx_volume(True)
-
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
@@ -395,15 +444,19 @@ class Music:
             UI_CLICK_SFX
         ]
 
-    def play_track(self):
+    def play_track(self, is_muted):
 
-        pygame.mixer.music.load((os.path.join('assets', 'sfx', '001-bgm.wav')))
-        pygame.mixer.music.play(-1)
-        pygame.mixer.music.set_volume(0.1)
+        if is_muted is False:
+            pygame.mixer.music.load((os.path.join('assets', 'sfx', '001-bgm.wav')))
+            pygame.mixer.music.play(-1)
+            pygame.mixer.music.set_volume(0.1)
+        
+        else:
+             pygame.mixer.music.stop()
 
     
     def set_sfx_volume(self, sfx_enabled):
-
+        
         if not sfx_enabled:
             for file in self.sfx:
                 file.set_volume(0)
@@ -411,3 +464,4 @@ class Music:
         else:
             for i, file in enumerate(self.sfx):
                 file.set_volume(self.volume[i])
+
