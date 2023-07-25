@@ -32,6 +32,7 @@ BACKGROUND = [pygame.image.load(
 
 TITLE_SPRITES = [
     "003-main-title",
+    "004-manual-title",
     "005-options-title",
     "006-credits-title"
 ]
@@ -84,6 +85,17 @@ POINTER = [pygame.image.load(
                 os.path.join('assets', 'sprites', 'menu', 'pointers', f'{img}.png')) 
                 for img in POINTER_SPRITES]
 
+
+GAME_INFO_SPRITES = [
+    '001-game-info',
+    '002-game-info',
+    '003-game-info',
+    '004-game-info',
+    '005-game-info'
+]
+GAME_SLIDES = [pygame.image.load(
+                    os.path.join('assets', 'sprites', 'menu', 'guide', 'game info', f'{img}.png')) 
+                    for img in GAME_INFO_SPRITES]
 
 """ FONTS """
 

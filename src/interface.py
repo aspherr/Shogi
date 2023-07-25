@@ -4,6 +4,7 @@ from time import sleep
 class Menu:
     def __init__(self) -> None:
         self.pregame = Pregame()
+        self.manual = Manual()
         self.options = Options()
         self.credits = Credits()
         
@@ -79,6 +80,7 @@ class Menu:
         self.buttons[1].input()
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[1].clicked:
             UI_CLICK_SFX.play()
+            self.manual.basics(self.window)
 
         self.buttons[2].input()
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[2].clicked:
@@ -209,6 +211,70 @@ class Pregame:
             CLOCK.tick(FPS)
 
 
+class Manual:
+
+    def __init__(self) -> None:
+        self.y_velocity = 10
+        self.y_acceleration = -0.50
+
+        self.buttons = [
+            Button(POINTER[1], POINTER[2], (55, 55), (815, 610), (815, 610), 0, 'none'),
+            Button(POINTER[3], POINTER[4], (55, 55), (30, 610), (30, 610), 0, 'none'),
+        ]
+
+
+    def render_title(self) -> None:
+
+        WINDOW.blit(TITLE[1], (280, self.y_velocity+30))
+
+        if self.y_velocity >= 10:
+            self.y_acceleration = -0.50
+        
+        elif self.y_velocity <= -10:
+            self.y_acceleration = 0.50
+        
+        self.y_velocity += self.y_acceleration
+    
+    
+    def basics(self, menu) -> None:
+
+        slides = Slides(GAME_SLIDES, 100, 150, 'general')
+
+        running = True
+        while running:
+            WINDOW.blit(BACKGROUND[1], (0, 0))
+            self.render_title()
+            slides.render(4)
+
+            for i in range(len(self.buttons)):
+                self.buttons[i].render()
+            
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    running = False
+                    exit()
+                
+                self.input(event, menu)
+                slides.input(event, 4)
+                
+            pygame.display.update()
+            CLOCK.tick(FPS)
+
+
+    def input(self, event, menu) -> None:
+
+        self.buttons[0].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[0].clicked:
+            UI_CLICK_SFX.play()
+            menu()
+
+        self.buttons[1].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[1].clicked:
+            UI_CLICK_SFX.play()
+            menu()
+
+
 class Options:
 
     def __init__(self) -> None:
@@ -231,7 +297,7 @@ class Options:
 
     def render_title(self) -> None:
 
-        WINDOW.blit(TITLE[1], (250, self.y_velocity+30))
+        WINDOW.blit(TITLE[2], (250, self.y_velocity+30))
     
         if self.y_velocity >= 10:
             self.y_acceleration = -0.50
@@ -323,7 +389,7 @@ class Credits:
 
     def render_title(self) -> None:
 
-        WINDOW.blit(TITLE[2], (250, self.y_velocity+30))
+        WINDOW.blit(TITLE[3], (250, self.y_velocity+30))
 
         if self.y_velocity >= 10:
             self.y_acceleration = -0.50
@@ -464,4 +530,72 @@ class Music:
         else:
             for i, file in enumerate(self.sfx):
                 file.set_volume(self.volume[i])
+
+
+class Slides:
+
+    def __init__(self, slides, width, height, type) -> None:
+        self.slides = slides
+        self.width = width
+        self.height = height
+        self.type = type
+        self.index = 0
+
+        if self.type in {'general', 'board'}:
+            self.pointer_x1 = 810
+            self.pointer_x2 = 35
+        
+        else:
+            self.pointer_x1 = 595
+            self.pointer_x2 = 250
+
+        self.buttons = [
+            Button(POINTER[5], POINTER[6], (55, 55), (self.pointer_x1, 350), (self.pointer_x1, 350), 0, 'none'),
+            Button(POINTER[7], POINTER[8], (55, 55), (self.pointer_x2, 350), (self.pointer_x2, 350), 0, 'none')
+        ]
+
+        self.draw_prev = False
+        self.draw_next = True
+    
+
+    def pointer_handler(self, max_index):
+
+        if self.index > 0 or self.index <= max_index:
+            self.draw_prev = True
+            self.draw_next = True
+        
+        if self.index >= max_index:
+            self.draw_next = False
+        
+        if self.index <= 0:
+            self.draw_prev = False
+    
+
+    def render(self, max_index):
+        
+        WINDOW.blit(self.slides[self.index], (self.width, self.height))
+        
+        if self.draw_next and self.index != max_index:
+            self.buttons[0].render()
+
+        if self.draw_prev and self.index > 0:
+            self.buttons[1].render()
+
+
+    def input(self, event, max_index):
+
+        if self.draw_next:
+            self.buttons[0].input()
+            if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[0].clicked and self.index != max_index:
+                UI_CLICK_SFX.play()
+                self.index += 1
+        
+        if self.draw_prev:
+            self.buttons[1].input()
+            if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[1].clicked and self.index > 0:
+                UI_CLICK_SFX.play()
+                self.index -= 1     
+        
+        self.pointer_handler(max_index)
+        print(self.index)
 
