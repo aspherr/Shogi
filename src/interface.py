@@ -218,14 +218,14 @@ class Manual:
         self.y_acceleration = -0.50
 
         self.buttons = [
-            Button(POINTER[1], POINTER[2], (55, 55), (815, 610), (815, 610), 0, 'none'),
             Button(POINTER[3], POINTER[4], (55, 55), (30, 610), (30, 610), 0, 'none'),
+            Button(POINTER[1], POINTER[2], (55, 55), (815, 610), (815, 610), 0, 'none')
         ]
 
 
     def render_title(self) -> None:
 
-        WINDOW.blit(TITLE[1], (280, self.y_velocity+30))
+        WINDOW.blit(TITLE[1], (280, self.y_velocity+10))
 
         if self.y_velocity >= 10:
             self.y_acceleration = -0.50
@@ -255,14 +255,65 @@ class Manual:
                     running = False
                     exit()
                 
-                self.input(event, menu)
+                self.basics_input(event, menu)
                 slides.input(event, 4)
                 
             pygame.display.update()
             CLOCK.tick(FPS)
 
 
-    def input(self, event, menu) -> None:
+    def setup(self, menu) -> None:
+
+        slides = Slides(BOARD_SLIDES, 100, 150, 'board')
+
+        running = True
+        while running:
+            WINDOW.blit(BACKGROUND[1], (0, 0))
+            self.render_title()
+            slides.render(5)
+
+            for i in range(len(self.buttons)):
+                self.buttons[i].render()
+            
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    running = False
+                    exit()
+                
+                self.setup_input(event, menu)
+                slides.input(event, 5)
+                
+            pygame.display.update()
+            CLOCK.tick(FPS)
+
+
+    def pieces(self, menu) -> None:
+
+        slides = Slides(PIECES_SLIDES, 130, 120, 'pieces')
+
+        running = True
+        while running:
+            WINDOW.blit(BACKGROUND[1], (0, 0))
+            self.render_title()
+            slides.render(13)
+
+            self.buttons[0].render()
+            
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    running = False
+                    exit()
+                
+                self.pieces_input(event, menu)
+                slides.input(event, 13)
+                
+            pygame.display.update()
+            CLOCK.tick(FPS)
+
+
+    def basics_input(self, event, menu) -> None:
 
         self.buttons[0].input()
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[0].clicked:
@@ -272,7 +323,28 @@ class Manual:
         self.buttons[1].input()
         if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[1].clicked:
             UI_CLICK_SFX.play()
-            menu()
+            self.setup(menu)
+
+
+    def setup_input(self, event, menu) -> None:
+
+        self.buttons[0].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[0].clicked:
+            UI_CLICK_SFX.play()
+            self.basics(menu)
+
+        self.buttons[1].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[1].clicked:
+            UI_CLICK_SFX.play()
+            self.pieces(menu)
+
+
+    def pieces_input(self, event, menu) -> None:
+
+        self.buttons[0].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[0].clicked:
+            UI_CLICK_SFX.play()
+            self.setup(menu)
 
 
 class Options:
@@ -551,7 +623,7 @@ class Slides:
 
         self.buttons = [
             Button(POINTER[5], POINTER[6], (55, 55), (self.pointer_x1, 350), (self.pointer_x1, 350), 0, 'none'),
-            Button(POINTER[7], POINTER[8], (55, 55), (self.pointer_x2, 350), (self.pointer_x2, 350), 0, 'none')
+            Button(POINTER[7], POINTER[8], (55, 55), (self.pointer_x2, 350), (self.pointer_x2, 350), 0, 'none'),
         ]
 
         self.draw_prev = False
@@ -597,5 +669,4 @@ class Slides:
                 self.index -= 1     
         
         self.pointer_handler(max_index)
-        print(self.index)
 

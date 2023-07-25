@@ -97,7 +97,43 @@ GAME_SLIDES = [pygame.image.load(
                     os.path.join('assets', 'sprites', 'menu', 'guide', 'game info', f'{img}.png')) 
                     for img in GAME_INFO_SPRITES]
 
+
+BOARD_INFO_SPRITES = [
+    '001-board-info',
+    '002-board-info',
+    '003-board-info',
+    '004-board-info',
+    '005-board-info',
+    "006-board-info"
+]
+BOARD_SLIDES = [pygame.image.load(
+                    os.path.join('assets', 'sprites', 'menu', 'guide', 'board info', f'{img}.png')) 
+                    for img in BOARD_INFO_SPRITES]
+
+
+PIECE_INFO_SPRITES = [
+    '001-piece-P',
+    '002-piece-L',
+    '003-piece-N',
+    '004-piece-S',
+    '005-piece-G',
+    '006-piece-B',
+    '007-piece-R',
+    '008-piece-K',
+    '009-piece-PP',
+    '010-piece-PL',
+    '011-piece-PN',
+    '012-piece-PS',
+    '013-piece-PB',
+    '014-piece-PR'
+]
+PIECES_SLIDES = [pygame.image.load(
+                    os.path.join('assets', 'sprites', 'menu', 'guide', 'piece info', f'{img}.png')) 
+                    for img in PIECE_INFO_SPRITES]
+
+
 """ FONTS """
 
 FONT_1 = pygame.font.SysFont('Savior', 80)
 FONT_2 = pygame.font.SysFont('Savior', 50)
+
