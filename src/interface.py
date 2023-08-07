@@ -1,7 +1,7 @@
 from const import *
 from time import sleep
 
-class Menu:
+class Interface:
     def __init__(self) -> None:
         self.pregame = Pregame()
         self.manual = Manual()
@@ -102,6 +102,7 @@ class Menu:
 class Pregame:
 
     def __init__(self) -> None:
+        self.game = Game()
         self.buttons = [
             Button(POINTER[3], POINTER[4], (55, 55), (30, 610), (30, 610), 0, 'none'),
             Button(BUTTON[10], BUTTON[11], (290, 82), (300, 275), (295, 220), 37, 'large'),
@@ -125,44 +126,6 @@ class Pregame:
         message = FONT_1.render("CHOOSE YOUR COLOUR", 1, WHITE)
         WINDOW.blit(message, (200, 150))
     
-
-    def opponent_window_input(self, event, menu) -> None:
-
-        self.buttons[0].input()
-        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[0].clicked:
-            UI_CLICK_SFX.play()
-            menu()
-        
-        self.buttons[1].input()
-        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[1].clicked:
-            UI_CLICK_SFX.play()
-            self.opponent = 'engine'
-            self.colour_window(menu)
-            
-        self.buttons[2].input()
-        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[2].clicked:
-            UI_CLICK_SFX.play()
-            self.opponent = 'player'
-            self.colour_window(menu)
-        
-
-    def colour_window_input(self, event, menu) -> None:
-
-        self.buttons[0].input()
-        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[0].clicked:
-            UI_CLICK_SFX.play()
-            self.opponent_window(menu)
-
-        self.buttons[3].input()
-        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[3].clicked:
-            UI_CLICK_SFX.play()
-            self.colour = 'sente'
-
-        self.buttons[4].input()
-        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[4].clicked:
-            UI_CLICK_SFX.play()
-            self.colour = 'gote'
-
 
     def opponent_window(self, menu) -> None:
 
@@ -209,6 +172,81 @@ class Pregame:
 
             pygame.display.update()
             CLOCK.tick(FPS)
+
+
+    def opponent_window_input(self, event, menu) -> None:
+
+        self.buttons[0].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[0].clicked:
+            UI_CLICK_SFX.play()
+            menu()
+        
+        self.buttons[1].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[1].clicked:
+            UI_CLICK_SFX.play()
+            self.opponent = 'engine'
+            self.colour_window(menu)
+            
+        self.buttons[2].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[2].clicked:
+            UI_CLICK_SFX.play()
+            self.opponent = 'player'
+            self.colour_window(menu)
+        
+
+    def colour_window_input(self, event, menu) -> None:
+
+        self.buttons[0].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[0].clicked:
+            UI_CLICK_SFX.play()
+            self.opponent_window(menu)
+
+        self.buttons[3].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[3].clicked:
+            UI_CLICK_SFX.play()
+            self.colour = 'sente'
+            self.game.window()
+
+        self.buttons[4].input()
+        if event.type == pygame.MOUSEBUTTONDOWN and self.buttons[4].clicked:
+            UI_CLICK_SFX.play()
+            self.colour = 'gote'
+            self.game.window()
+
+
+class Game:
+
+    def __init__(self) -> None:
+      self.pzone_markers = [(354, 271), (536, 271), (354, 453), (536, 453)]
+
+
+    def window(self):
+
+        pygame.display.set_caption('SHOGI ENGINE') 
+
+        running = True
+        while running:
+            WINDOW.blit(BACKGROUND[1], (0, 0))
+
+            WINDOW.blit(BOARD_SPRITE, (63, -15))
+            WINDOW.blit(KOMA1_SPRITE, (800, 65))
+            WINDOW.blit(KOMA2_SPRITE, (20, 65))
+
+            for marker in self.pzone_markers:
+                pygame.draw.circle(WINDOW, DGREY, marker, 7, 0)
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    running = False
+                    exit()
+                                
+            pygame.display.update()
+            CLOCK.tick(FPS)
+
+
+        def input(self):
+            pass
 
 
 class Manual:

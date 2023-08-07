@@ -14,7 +14,7 @@ pygame.display.set_caption("SHOGI")
 
 class Main:
     def __init__(self) -> None:
-        self.menu = Menu()
+        self.menu = Interface()
         self.music = Music()
 
     def main(self) -> None:

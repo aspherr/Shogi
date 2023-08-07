@@ -12,6 +12,7 @@ FPS = 60
 
 """ COLOURS """
 WHITE = (220, 220, 220)
+DGREY = (48, 48, 48)
 
 
 """ AUDIO """
@@ -130,6 +131,11 @@ PIECE_INFO_SPRITES = [
 PIECES_SLIDES = [pygame.image.load(
                     os.path.join('assets', 'sprites', 'menu', 'guide', 'piece info', f'{img}.png')) 
                     for img in PIECE_INFO_SPRITES]
+
+
+BOARD_SPRITE = pygame.image.load(os.path.join('assets', 'sprites', 'board', '001-board.png'))
+KOMA1_SPRITE = pygame.image.load(os.path.join('assets', 'sprites', 'komadai', '003-01-koma.png'))
+KOMA2_SPRITE = pygame.image.load(os.path.join('assets', 'sprites', 'komadai', '004-02-koma.png'))
 
 
 """ FONTS """
