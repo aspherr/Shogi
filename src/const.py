@@ -10,6 +10,19 @@ CLOCK = pygame.time.Clock()
 FPS = 60
 
 
+""" DIMENSIONS. """
+BOARD_SIZE = (170, 87, 550, 550)
+KOMA1_SIZE = (799, 86, 62, 428)
+KOMA2_SIZE = (39, 216, 62, 428)
+
+BOARD_TILE_SIZE = BOARD_SIZE[2] // 9
+KOMA_TILE_SIZE = KOMA1_SIZE[3] / 7
+
+BOARD_X, BOARD_Y = BOARD_SIZE[0], BOARD_SIZE[1]
+KOMA1_X, KOMA1_Y = KOMA1_SIZE[0], KOMA1_SIZE[1]
+KOMA2_X, KOMA2_Y = KOMA2_SIZE[0], KOMA2_SIZE[1]
+
+
 """ COLOURS """
 WHITE = (220, 220, 220)
 DGREY = (48, 48, 48)
@@ -136,6 +149,36 @@ PIECES_SLIDES = [pygame.image.load(
 BOARD_SPRITE = pygame.image.load(os.path.join('assets', 'sprites', 'board', '001-board.png'))
 KOMA1_SPRITE = pygame.image.load(os.path.join('assets', 'sprites', 'komadai', '003-01-koma.png'))
 KOMA2_SPRITE = pygame.image.load(os.path.join('assets', 'sprites', 'komadai', '004-02-koma.png'))
+
+
+SENTE_PIECES_SPRITES = [
+    '001-P1',
+    '002-L1',
+    '003-N1',
+    '004-S1',
+    '005-G1',
+    '006-B1',
+    '007-R1',
+    '008-K1'
+]
+SENTE_PIECES = [pygame.image.load(
+                    os.path.join('assets', 'sprites', 'pieces', f'{img}.png')) 
+                    for img in SENTE_PIECES_SPRITES]
+
+
+GOTE_PIECES_SPRITES = [
+    '015-P2',
+    '016-L2',
+    '017-N2',
+    '018-S2',
+    '019-G2',
+    '020-B2',
+    '021-R2',
+    '022-K2'
+]
+GOTE_PIECES = [pygame.image.load(
+                    os.path.join('assets', 'sprites', 'pieces', f'{img}.png')) 
+                    for img in GOTE_PIECES_SPRITES]
 
 
 """ FONTS """

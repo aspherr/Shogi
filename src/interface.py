@@ -1,4 +1,5 @@
 from const import *
+from board import Board
 from time import sleep
 
 class Interface:
@@ -217,6 +218,7 @@ class Pregame:
 class Game:
 
     def __init__(self) -> None:
+      self.board = Board()
       self.pzone_markers = [(354, 271), (536, 271), (354, 453), (536, 453)]
 
 
@@ -234,6 +236,8 @@ class Game:
 
             for marker in self.pzone_markers:
                 pygame.draw.circle(WINDOW, DGREY, marker, 7, 0)
+
+            self.board.render_pieces()
 
             for event in pygame.event.get():
 
