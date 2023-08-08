@@ -25,7 +25,8 @@ KOMA2_X, KOMA2_Y = KOMA2_SIZE[0], KOMA2_SIZE[1]
 
 """ COLOURS """
 WHITE = (220, 220, 220)
-DGREY = (48, 48, 48)
+GREY1 = (48, 48, 48)
+GREY2 = (75, 75, 75)
 
 
 """ AUDIO """

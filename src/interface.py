@@ -222,6 +222,26 @@ class Game:
       self.pzone_markers = [(354, 271), (536, 271), (354, 453), (536, 453)]
 
 
+    def calc_pos(self, mx, my, dimensions, type) -> int:
+        
+        if type == 'board':
+            mx -= dimensions[0]
+            my -= dimensions[1]
+
+            return int(my // BOARD_TILE_SIZE), int(mx // BOARD_TILE_SIZE)
+
+
+    def get_mouse_pos(self, pos) -> int:
+
+        x, y = pos[0], pos[1]
+
+        if (
+            BOARD_SIZE[0] < x < BOARD_SIZE[0] + BOARD_SIZE[2] and
+            BOARD_SIZE[1] < y < BOARD_SIZE[1] + BOARD_SIZE[3]
+        ):
+            return self.calc_pos(x, y, BOARD_SIZE, 'board')
+
+
     def window(self):
 
         pygame.display.set_caption('SHOGI ENGINE') 
@@ -234,9 +254,6 @@ class Game:
             WINDOW.blit(KOMA1_SPRITE, (800, 65))
             WINDOW.blit(KOMA2_SPRITE, (20, 65))
 
-            for marker in self.pzone_markers:
-                pygame.draw.circle(WINDOW, DGREY, marker, 7, 0)
-
             self.board.render_pieces()
 
             for event in pygame.event.get():
@@ -244,13 +261,29 @@ class Game:
                 if event.type == pygame.QUIT:
                     running = False
                     exit()
+                
+                self.input(event)
                                 
+            for marker in self.pzone_markers:
+                pygame.draw.circle(WINDOW, GREY1, marker, 7, 0)
+
             pygame.display.update()
             CLOCK.tick(FPS)
 
 
-        def input(self):
-            pass
+    def input(self, event):
+        
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            
+            mouse_position = pygame.mouse.get_pos()
+            mx, my = mouse_position[0], mouse_position[1]
+
+            if ( 
+                BOARD_SIZE[0] < mx < BOARD_SIZE[0] + BOARD_SIZE[2] and
+                BOARD_SIZE[1] < my < BOARD_SIZE[1] + BOARD_SIZE[3]
+            ):
+                mx_rank, my_file = self.get_mouse_pos(mouse_position)   
+                self.board.play_move(mx_rank, my_file)
 
 
 class Manual:

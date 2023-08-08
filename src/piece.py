@@ -8,6 +8,8 @@ class Piece:
         self.file = file
         self.player = player
 
+        self.selected = False
+
 
     def get_piece(self) -> pygame.image:
         
@@ -17,6 +19,7 @@ class Piece:
         else:
             piece = GOTE_PIECES[self.id-1]
         
+        self.render_selection()
         return piece
 
 
@@ -28,9 +31,16 @@ class Piece:
         return x, y
 
 
+    def render_selection(self) -> None:
+
+        if self.selected:
+            pygame.draw.rect(
+                WINDOW, GREY2, (self.get_piece_pos()[0]-4, self.get_piece_pos()[1]-1, 60, 60), 0
+                )
+
+
 class Pawn(Piece):
     id = 1
-
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)
     
@@ -41,7 +51,6 @@ class Pawn(Piece):
 
 class Lance(Piece):
     id = 2
-
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)
     
@@ -52,7 +61,6 @@ class Lance(Piece):
 
 class Knight(Piece):
     id = 3
-
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)
     
@@ -63,7 +71,6 @@ class Knight(Piece):
 
 class SilverGeneral(Piece):
     id = 4
-
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)
     
@@ -74,7 +81,6 @@ class SilverGeneral(Piece):
 
 class GoldGeneral(Piece):
     id = 5
-
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)
     
@@ -85,7 +91,6 @@ class GoldGeneral(Piece):
 
 class Bishop(Piece):
     id = 6
-
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)
     
@@ -96,7 +101,6 @@ class Bishop(Piece):
 
 class Rook(Piece):
     id = 7
-
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)
     
@@ -107,7 +111,6 @@ class Rook(Piece):
 
 class King(Piece):
     id = 8
-
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)
     

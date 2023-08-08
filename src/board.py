@@ -1,3 +1,4 @@
+import itertools
 from const import *
 from piece import Pawn, Lance, Knight, SilverGeneral, GoldGeneral, Bishop, Rook, King
 
@@ -9,6 +10,9 @@ class Board:
         self.files = files
         self.board = [[0 for _ in range(ranks)] for _ in range(files)]
         self.init_board()
+
+        self.current_player = 'sente'
+        self.clicks = 0
 
 
     def notation(self) -> str:
@@ -55,3 +59,53 @@ class Board:
                 if self.board[x][y] != 0:
                     WINDOW.blit(self.board[x][y].get_piece(), (self.board[x][y].get_piece_pos()))
     
+
+    def selected(self, rank, file, pos) -> None:
+
+        if (self.board[rank][file] != 0 
+                and self.board[rank][file].player == self.current_player):
+            
+            self.reset_selection()
+            self.board[rank][file].selected = True
+
+            if self.board[pos[0]][pos[1]] != self.board[rank][file]:
+                self.clicks = 1
+            
+            else:
+                self.clicks += 1
+            
+            if self.clicks == 2:
+                self.clicks = 0
+                self.reset_selection()
+        
+    
+    def reset_selection(self) -> None:
+
+        for x, y in itertools.product(range(self.ranks), range(self.files)):
+            if self.board[x][y] != 0:
+                self.board[x][y].selected = False
+    
+
+    def get_current_pos(self, rank, file) -> tuple:
+
+        pos = rank, file
+        for x, y in itertools.product(range(self.ranks), range(self.files)):
+            if self.board[x][y] != 0 and self.board[x][y].selected is True:
+                pos = x, y
+            
+        return pos
+
+
+    def change_turn(self) -> None:
+
+        if self.current_player == 'sente':
+            self.current_player = 'gote'
+        
+        else:
+            self.current_player = 'sente'
+
+
+    def play_move(self, rank, file) -> None:
+        
+        self.selected(rank, file, self.get_current_pos(rank, file))
+
