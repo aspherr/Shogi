@@ -54,9 +54,8 @@ class Board:
 
     def render_pieces(self) -> None:
 
-        for x in range(self.ranks):
-            for y in range(self.files):
-                if self.board[x][y] != 0:
+        for x, y in itertools.product(range(self.ranks), range(self.files)):
+            if self.board[x][y] != 0:
                     WINDOW.blit(self.board[x][y].get_piece(), (self.board[x][y].get_piece_pos()))
     
 
@@ -77,6 +76,11 @@ class Board:
             if self.clicks == 2:
                 self.clicks = 0
                 self.reset_selection()
+        
+        elif pos != (rank, file):
+            self.clicks += 1
+            self.move(pos, (rank, file))
+            self.reset_selection()
         
     
     def reset_selection(self) -> None:
@@ -103,6 +107,19 @@ class Board:
         
         else:
             self.current_player = 'sente'
+
+
+    def move(self, start_pos, end_pos) -> None:
+        
+        pos = self.board[start_pos[0]][start_pos[1]]
+        reset_pos = 0
+
+        pos.rank, pos.file = end_pos[0], end_pos[1]
+        
+        self.board[end_pos[0]][end_pos[1]] = pos
+        self.board[start_pos[0]][start_pos[1]] = reset_pos
+
+        pos.update_img(end_pos)
 
 
     def play_move(self, rank, file) -> None:

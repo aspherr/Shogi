@@ -39,6 +39,12 @@ class Piece:
                 )
 
 
+    def update_img(self, pos) -> None:
+        
+        self.rank = pos[0]
+        self.file = pos[1]
+
+
 class Pawn(Piece):
     id = 1
     def __init__(self, rank, file, player) -> None:
