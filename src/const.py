@@ -182,6 +182,11 @@ GOTE_PIECES = [pygame.image.load(
                     for img in GOTE_PIECES_SPRITES]
 
 
+""" BOUNDS """
+TOP, BOTTOM = 0, 8
+LEFT, RIGHT = 0, 8
+
+
 """ FONTS """
 
 FONT_1 = pygame.font.SysFont('Savior', 80)

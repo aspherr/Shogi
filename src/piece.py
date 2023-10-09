@@ -43,6 +43,45 @@ class Piece:
         
         self.rank = pos[0]
         self.file = pos[1]
+    
+
+    def boundaries(self, board) -> None:
+
+        self.top = self.rank > TOP and (board[self.rank-1][self.file] == 0 or 
+                                        board[self.rank-1][self.file] != 0)
+        
+        self.bottom = self.rank < BOTTOM and (board[self.rank+1][self.file] or
+                                              board[self.rank+1][self.file])
+        
+        self.left = self.file > LEFT and (board[self.rank][self.file-1] or 
+                                          board[self.rank][self.file-1])
+
+        self.right = self.file < RIGHT and (board[self.rank][self.file+1] or
+                                            board[self.rank][self.file+1])
+
+        self.top_left = (self.rank > TOP and self.file > LEFT) and (board[self.rank-1][self.file-1] or
+                                                                     board[self.rank-1][self.file-1])
+
+        self.top_right = (self.rank > TOP and self.file < RIGHT) and (board[self.rank-1][self.file+1] or
+                                                                      board[self.rank-1][self.file+1])
+        
+        self.bottom_left = (self.rank < BOTTOM and self.file > LEFT) and (board[self.rank+1][self.file-1] or
+                                                                          board[self.rank+1][self.file-1])
+        
+        self.bottom_right = (self.rank < BOTTOM and self.file < RIGHT) and (board[self.rank+1][self.file+1] or
+                                                                            board[self.rank+1][self.file+1])
+
+
+    def generate_moves(self, board, moves, captures, condition, pos) -> None:
+
+        if condition is True:
+            if board[pos[0]][pos[1]] == 0:
+                moves.append((pos[1], pos[0]))
+            
+            elif board[pos[0]][pos[1]].player != self.player:
+                moves.append((pos[1], pos[0]))
+                captures.append((pos[0], pos[1]))
+
 
 
 class Pawn(Piece):
