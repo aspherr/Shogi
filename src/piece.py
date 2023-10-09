@@ -102,13 +102,11 @@ class Pawn(Piece):
         self.boundaries(board)
         if self.player == 'sente':
             self.generate_moves(board, moves, captures, self.top, (self.rank-1, self.file))
-
-            return moves, captures
-        
+            
         elif self.player == 'gote':
             self.generate_moves(board, moves, captures, self.bottom, (self.rank+1, self.file))
 
-            return moves, captures
+        return moves, captures
 
 
 class Lance(Piece):
@@ -119,6 +117,34 @@ class Lance(Piece):
 
     def __repr__(self) -> str:
         return 'Lance'
+    
+
+    def moves(self, board):
+
+        moves = []
+        captures = []
+        
+        if self.player == 'sente':
+            for i in range(self.rank, 0, -1):
+                
+                self.top = self.rank > TOP and (board[i-1][self.file] == 0 or
+                                                board[i-1][self.file] != 0)
+
+                self.generate_moves(board, moves, captures, self.top, (i-1, self.file))
+                if board[i-1][self.file] != 0:
+                    break
+        
+        elif self.player == 'gote':
+            for i in range(self.rank, 8, +1):
+                
+                self.top = self.rank > TOP and (board[i+1][self.file] == 0 or
+                                                board[i+1][self.file] != 0)
+
+                self.generate_moves(board, moves, captures, self.top, (i+1, self.file))
+                if board[i+1][self.file] != 0:
+                    break
+
+        return moves, captures
     
 
 class Knight(Piece):
