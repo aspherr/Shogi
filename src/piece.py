@@ -273,8 +273,115 @@ class Bishop(Piece):
 
     def __repr__(self) -> str:
         return 'Bishop'
-    
 
+
+    def moves(self, board):
+
+        moves = []
+        captures = []
+        
+        if self.player == 'sente':
+            for i in range(self.rank, 0, -1):
+                
+                right_file = self.file
+                self.top_right = (i > TOP and right_file < RIGHT) and (board[i-1][right_file+1] == 0 or
+                                                                       board[i-1][right_file+1] != 0)
+
+                self.generate_moves(board, moves, captures, self.top_right, (i-1, right_file+1))
+                if self.top_right is False or board[i-1][right_file+1] != 0:
+                    break
+
+                right_file += 1
+            
+            for i in range(self.rank, 0, -1):
+                
+                left_file = self.file
+                self.top_left = (i > TOP and left_file > LEFT) and (board[i-1][left_file-1] == 0 or
+                                                                    board[i-1][left_file-1] != 0)
+
+                self.generate_moves(board, moves, captures, self.top_left, (i-1, left_file-1))
+                if self.top_left is False or board[i-1][left_file+1] != 0:
+                    break
+
+                left_file -= 1
+            
+            for i in range(self.file, 8, +1):
+                
+                right_file = self.file
+                self.bottom_right = (i < BOTTOM and right_file < RIGHT) and (board[i+1][right_file+1] == 0 or
+                                                                             board[i+1][right_file+1] != 0)
+
+                self.generate_moves(board, moves, captures, self.bottom_right, (i-1, right_file-1))
+                if self.bottom_right is False or board[i+1][right_file+1] != 0:
+                    break
+
+                right_file += 1
+            
+            for i in range(self.file, 8, +1):
+                
+                left_file = self.file
+                self.bottom_left = (i < BOTTOM and left_file > LEFT) and (board[i+1][left_file-1] == 0 or 
+                                                                          board[i+1][left_file-1] != 0)
+
+                self.generate_moves(board, moves, captures, self.bottom_left, (i+1, left_file-1))
+                if self.bottom_left is False or board[i+1][left_file-1] != 0:
+                    break
+
+                left_file -= 1
+
+        
+        elif self.player == 'gote':
+            for i in range(self.file, 8, +1):
+                
+                right_file = self.file
+                self.top_right = (i < BOTTOM and right_file > LEFT) and (board[i-1][right_file+1] == 0 or 
+                                                                         board[i-1][right_file+1] != 0)
+
+                self.generate_moves(board, moves, captures, self.top_right, (i-1, right_file+1))
+                if self.top_right is False or board[i+1][right_file-1] != 0:
+                    break
+
+                right_file -= 1
+            
+            for i in range(self.file, 8, +1):
+                
+                left_file = self.file
+                self.top_left = (i < BOTTOM and left_file < RIGHT) and (board[i-1][left_file-1] == 0 or 
+                                                                        board[i-1][left_file-1] != 0)
+
+                self.generate_moves(board, moves, captures, self.top_left, (i-1, right_file-1))
+                if self.top_left is False or board[i+1][left_file+1] != 0:
+                    break
+
+                left_file += 1
+
+            for i in range(self.rank, 0, -1):
+
+                right_file = self.file
+                self.bottom_right = (i > TOP and right_file > LEFT) and (board[i+1][right_file+1] == 0 or 
+                                                                         board[i+1][right_file+1] != 0)
+
+                self.generate_moves(board, moves, captures, self.bottom_right, (i+1, right_file+1))
+                if self.bottom_right is False or board[i+1][right_file+1] != 0:
+                    break
+
+                right_file -= 1
+
+            for i in range(self.rank, 0, -1):
+                
+                left_file = self.file
+                self.bottom_left = (i > TOP and left_file < RIGHT) and (board[i+1][left_file-1] == 0 or 
+                                                                        board[i+1][left_file-1] != 0)
+
+                self.generate_moves(board, moves, captures, self.bottom_left, (i+1, left_file-1))
+                if self.bottom_left is False or board[i+1][left_file-1] != 0:
+                    break
+
+                left_file += 1
+
+        return moves, captures
+
+    
 class Rook(Piece):
     id = 7
     def __init__(self, rank, file, player) -> None:
