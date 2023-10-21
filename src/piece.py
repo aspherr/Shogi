@@ -11,7 +11,7 @@ class Piece:
         self.selected = False
 
 
-    def get_piece(self) -> pygame.image:
+    def get_piece(self, board) -> pygame.image:
         
         if self.player == "sente":
             piece = SENTE_PIECES[self.id-1]
@@ -19,7 +19,7 @@ class Piece:
         else:
             piece = GOTE_PIECES[self.id-1]
         
-        self.render_selection()
+        self.render_selection(board)
         return piece
 
 
@@ -29,14 +29,6 @@ class Piece:
         y = int(BOARD_Y + (self.rank * BOARD_TILE_SIZE)) + 2
 
         return x, y
-
-
-    def render_selection(self) -> None:
-
-        if self.selected:
-            pygame.draw.rect(
-                WINDOW, GREY2, (self.get_piece_pos()[0]-4, self.get_piece_pos()[1]-1, 60, 60), 0
-                )
 
 
     def update_img(self, pos) -> None:
@@ -81,8 +73,38 @@ class Piece:
             elif board[pos[0]][pos[1]].player != self.player:
                 moves.append((pos[1], pos[0]))
                 captures.append((pos[0], pos[1]))
+    
+
+    def render_moves(self, board) -> None:
+
+        moves, captures = self.moves(board)
+        moves, captures =  list(moves), list(captures)
+        print(moves)
+
+        for i in captures:
+    
+            if board[i[1]][i[0]] != 0 and (i[0], i[1]) in moves and board[i[1]][i[0]].player != self.player:
+                x1 = int(BOARD_X + (i[1] * BOARD_TILE_SIZE)) + 1
+                y1 = int(BOARD_Y + (i[0] * BOARD_TILE_SIZE)) + 1
+
+                moves.remove((i[0] , i[1]))
+                pygame.draw.rect(WINDOW, GREEN, (x1, y1, 60, 60), 1)
+            
+        for j in moves:
+            x2 = int(BOARD_X + (j[0] * BOARD_TILE_SIZE)) + 1
+            y2 = int(BOARD_Y + (j[1] * BOARD_TILE_SIZE)) + 1
+            pygame.draw.rect(WINDOW, GREY2, (int(x2), int(y2), 60, 60), 0)
 
 
+    def render_selection(self, board) -> None:
+
+        if self.selected:
+            pygame.draw.rect(
+                WINDOW, GREY2, (self.get_piece_pos()[0]-4, self.get_piece_pos()[1]-1, 60, 60), 0
+                )
+            
+            self.render_moves(board)
+        
 
 class Pawn(Piece):
     id = 1

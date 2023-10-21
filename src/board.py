@@ -56,7 +56,7 @@ class Board:
 
         for x, y in itertools.product(range(self.ranks), range(self.files)):
             if self.board[x][y] != 0:
-                    WINDOW.blit(self.board[x][y].get_piece(), (self.board[x][y].get_piece_pos()))
+                    WINDOW.blit(self.board[x][y].get_piece(self.board), (self.board[x][y].get_piece_pos()))
     
 
     def selected(self, rank, file, pos) -> None:
