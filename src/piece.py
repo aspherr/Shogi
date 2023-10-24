@@ -42,30 +42,31 @@ class Piece:
         self.top = self.rank > TOP and (board[self.rank-1][self.file] == 0 or 
                                         board[self.rank-1][self.file] != 0)
         
-        self.bottom = self.rank < BOTTOM and (board[self.rank+1][self.file] or
-                                              board[self.rank+1][self.file])
+        self.bottom = self.rank < BOTTOM and (board[self.rank+1][self.file] == 0 or
+                                              board[self.rank+1][self.file] != 0)
         
-        self.left = self.file > LEFT and (board[self.rank][self.file-1] or 
-                                          board[self.rank][self.file-1])
+        self.left = self.file > LEFT and (board[self.rank][self.file-1] == 0 or 
+                                          board[self.rank][self.file-1] != 0)
 
-        self.right = self.file < RIGHT and (board[self.rank][self.file+1] or
-                                            board[self.rank][self.file+1])
+        self.right = self.file < RIGHT and (board[self.rank][self.file+1] == 0 or
+                                            board[self.rank][self.file+1] != 0)
 
-        self.top_left = (self.rank > TOP and self.file > LEFT) and (board[self.rank-1][self.file-1] or
-                                                                     board[self.rank-1][self.file-1])
+        self.top_left = (self.rank > TOP and self.file > LEFT) and (board[self.rank-1][self.file-1] == 0 or
+                                                                     board[self.rank-1][self.file-1] != 0)
 
-        self.top_right = (self.rank > TOP and self.file < RIGHT) and (board[self.rank-1][self.file+1] or
-                                                                      board[self.rank-1][self.file+1])
+        self.top_right = (self.rank > TOP and self.file < RIGHT) and (board[self.rank-1][self.file+1] == 0 or
+                                                                      board[self.rank-1][self.file+1] != 0)
         
-        self.bottom_left = (self.rank < BOTTOM and self.file > LEFT) and (board[self.rank+1][self.file-1] or
-                                                                          board[self.rank+1][self.file-1])
+        self.bottom_left = (self.rank < BOTTOM and self.file > LEFT) and (board[self.rank+1][self.file-1] == 0 or
+                                                                          board[self.rank+1][self.file-1] != 0)
         
-        self.bottom_right = (self.rank < BOTTOM and self.file < RIGHT) and (board[self.rank+1][self.file+1] or
-                                                                            board[self.rank+1][self.file+1])
+        self.bottom_right = (self.rank < BOTTOM and self.file < RIGHT) and (board[self.rank+1][self.file+1] == 0 or
+                                                                            board[self.rank+1][self.file+1] != 0)
 
 
     def generate_moves(self, board, moves, captures, condition, pos) -> None:
 
+        print(condition)
         if condition is True:
             if board[pos[0]][pos[1]] == 0:
                 moves.append((pos[1], pos[0]))
@@ -73,13 +74,12 @@ class Piece:
             elif board[pos[0]][pos[1]].player != self.player:
                 moves.append((pos[1], pos[0]))
                 captures.append((pos[0], pos[1]))
-    
+            
 
     def render_moves(self, board) -> None:
 
         moves, captures = self.moves(board)
         moves, captures =  list(moves), list(captures)
-        print(moves)
 
         for i in captures:
     
@@ -401,7 +401,6 @@ class Rook(Piece):
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)
     
-
     def __repr__(self) -> str:
         return 'Rook'
 
@@ -494,9 +493,9 @@ class King(Piece):
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)
     
-
     def __repr__(self) -> str:
         return 'King'
+
 
     def moves(self, board):
 
@@ -505,26 +504,28 @@ class King(Piece):
         
         self.boundaries(board)
         if self.player == 'sente':
-            conditions = [self.top, self.right, self.left, self.bottom, 
+            conditions = [self.top, self.right, self.left, self.bottom,
                           self.top_right, self.top_left, self.bottom_right, self.bottom_left]
-            
-            pos = [(self.rank-1, self.file), (self.rank, self.file+1), (self.rank, self.file-1), 
-                   (self.rank+1, self.file), (self.rank-1, self.file+1), (self.rank-1, self.file-1),
+
+            pos = [(self.rank-1, self.file), (self.rank, self.file+1),
+                   (self.rank, self.file-1), (self.rank+1, self.file),
+                   (self.rank-1, self.file+1), (self.rank-1, self.file-1),
                    (self.rank+1, self.file+1), (self.rank+1, self.file-1)]
-            
+
             for i in range(len(conditions)):
                 self.generate_moves(board, moves, captures, conditions[i], pos[i])
-
         
         elif self.player == 'gote':
-            conditions = [self.top, self.right, self.left, self.bottom, 
+
+            conditions = [self.top, self.right, self.left, self.bottom,
                           self.top_right, self.top_left, self.bottom_right, self.bottom_left]
-            
-            pos = [(self.rank-1, self.file), (self.rank, self.file+1), (self.rank, self.file-1), 
-                   (self.rank+1, self.file), (self.rank-1, self.file+1), (self.rank-1, self.file-1),
+
+            pos = [(self.rank-1, self.file), (self.rank, self.file+1),
+                   (self.rank, self.file-1), (self.rank+1, self.file),
+                   (self.rank-1, self.file+1), (self.rank-1, self.file-1),
                    (self.rank+1, self.file+1), (self.rank+1, self.file-1)]
-            
+
             for i in range(len(conditions)):
                 self.generate_moves(board, moves, captures, conditions[i], pos[i])
-
+            
         return moves, captures
