@@ -159,7 +159,7 @@ class Pregame:
 
             self.buttons[0].render()
             for i in range(2):
-                self.buttons[i+2].render()
+                self.buttons[i+3].render()
             
             self.render_colour_text()
 
