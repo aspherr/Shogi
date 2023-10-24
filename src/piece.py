@@ -158,8 +158,8 @@ class Lance(Piece):
         elif self.player == 'gote':
             for i in range(self.rank, 8, +1):
                 
-                self.top = self.rank > TOP and (board[i+1][self.file] == 0 or
-                                                board[i+1][self.file] != 0)
+                self.top = self.rank < BOTTOM and (board[i+1][self.file] == 0 or
+                                                   board[i+1][self.file] != 0)
 
                 self.generate_moves(board, moves, captures, self.top, (i+1, self.file))
                 if board[i+1][self.file] != 0:
