@@ -451,15 +451,6 @@ class Rook(Piece):
         
         elif self.player == 'gote':
             for i in range(self.rank, 0, -1):
-
-                self.top = self.rank < BOTTOM and (board[i+1][self.file] == 0 or 
-                                                      board[i+1][self.file] != 0)
-
-                self.generate_moves(board, moves, captures, self.top, (i+1, self.file))
-                if board[i+1][self.file] != 0:
-                    break
-                
-            for i in range(self.rank, 8, +1):
                 
                 self.bottom = self.rank > TOP and (board[i-1][self.file] == 0 or
                                                 board[i-1][self.file] != 0)
@@ -468,22 +459,31 @@ class Rook(Piece):
                 if board[i-1][self.file] != 0:
                     break
             
-            for i in range(self.file, 0, -1):
+            for i in range(self.rank, 8, +1):
+                
+                self.top = self.rank < BOTTOM and (board[i+1][self.file] == 0 or 
+                                                      board[i+1][self.file] != 0)
 
-                self.left = self.rank > TOP and (board[self.rank][i+1] == 0 or
-                                                  board[self.rank][i+1] != 0)
-
-                self.generate_moves(board, moves, captures, self.left, (self.rank, i+1))
-                if board[self.rank][i+1] != 0:
+                self.generate_moves(board, moves, captures, self.top, (i+1, self.file))
+                if board[i+1][self.file] != 0:
                     break
-                            
-            for i in range(self.file, 8, +1):
+            
+            for i in range(self.file, 0, -1):
                 
                 self.right = self.file > LEFT and (board[self.rank][i-1] == 0 or
                                                   board[self.rank][i-1] != 0)
 
                 self.generate_moves(board, moves, captures, self.right, (self.rank, i-1))
                 if board[self.rank][i-1] != 0:
+                    break
+            
+            for i in range(self.file, 8, +1):
+                
+                self.left = self.rank > TOP and (board[self.rank][i+1] == 0 or
+                                                  board[self.rank][i+1] != 0)
+
+                self.generate_moves(board, moves, captures, self.left, (self.rank, i+1))
+                if board[self.rank][i+1] != 0:
                     break
 
         return moves, captures
