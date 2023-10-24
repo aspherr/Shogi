@@ -81,12 +81,15 @@ class Piece:
         moves, captures =  list(moves), list(captures)
 
         for i in captures:
-    
-            if board[i[1]][i[0]] != 0 and (i[0], i[1]) in moves and board[i[1]][i[0]].player != self.player:
-                x1 = int(BOARD_X + (i[1] * BOARD_TILE_SIZE)) + 1
-                y1 = int(BOARD_Y + (i[0] * BOARD_TILE_SIZE)) + 1
 
-                moves.remove((i[0] , i[1]))
+            rank = i[0]
+            file = i[1]
+    
+            if board[rank][file] != 0 and (file, rank) in moves and board[rank][file].player != self.player:
+                x1 = int(BOARD_X + (file * BOARD_TILE_SIZE)) + 1
+                y1 = int(BOARD_Y + (rank * BOARD_TILE_SIZE)) + 1
+
+                moves.remove((file, rank))
                 pygame.draw.rect(WINDOW, GREEN, (x1, y1, 60, 60), 1)
             
         for j in moves:

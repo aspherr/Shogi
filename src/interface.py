@@ -283,7 +283,6 @@ class Game:
                 BOARD_SIZE[1] < my < BOARD_SIZE[1] + BOARD_SIZE[3]
             ):
                 mx_rank, my_file = self.get_mouse_pos(mouse_position) 
-                print(mx_rank, my_file)  
                 self.board.play_move(mx_rank, my_file)
 
 

@@ -11,7 +11,7 @@ class Board:
         self.board = [[0 for _ in range(ranks)] for _ in range(files)]
         self.init_board()
 
-        self.current_player = 'gote'
+        self.current_player = 'sente'
         self.clicks = 0
 
 
