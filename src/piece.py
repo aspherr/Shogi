@@ -73,6 +73,12 @@ class Piece:
             elif board[pos[0]][pos[1]].player != self.player:
                 moves.append((pos[1], pos[0]))
                 captures.append((pos[0], pos[1]))
+    
+
+    def moveset(self, board) -> list:
+
+        moveset, _ = self.moves(board)
+        return moveset
             
 
     def render_moves(self, board) -> None:

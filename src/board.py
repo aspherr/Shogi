@@ -15,7 +15,7 @@ class Board:
         self.clicks = 0
 
 
-    def notation(self) -> str:
+    def notation(self, rank, file) -> str:
 
         ranks_dict = {'1': 8, '2': 7, '3': 6, '4': 5, '5': 4, '6': 3, '7': 2, '8': 1, '9': 0}
         rank_notation = {value: rank_key for rank_key, value in ranks_dict.items()}
@@ -23,7 +23,7 @@ class Board:
         files_dict = {'一': 0, '二': 1, '三': 2, '四': 3, '五': 4, '六': 5, '七': 6, '八': 7, '九': 8}
         file_notation = {value: file_key for file_key, value in files_dict.items()}
 
-        return rank_notation[self.ranks] + file_notation[self.files]
+        return rank_notation[rank] + file_notation[file]
 
 
     def init_board(self) -> None:
@@ -79,10 +79,9 @@ class Board:
         
         elif pos != (rank, file):
             self.clicks += 1
-            self.move(pos, (rank, file))
+            self.check_move(rank, file, pos)
             self.reset_selection()
-            self.change_turn()
-        
+           
     
     def reset_selection(self) -> None:
 
@@ -110,7 +109,7 @@ class Board:
             self.current_player = 'sente'
 
 
-    def move(self, start_pos, end_pos) -> None:
+    def move(self, start_pos, end_pos) -> bool:
         
         pos = self.board[start_pos[0]][start_pos[1]]
         reset_pos = 0
@@ -121,6 +120,34 @@ class Board:
         self.board[start_pos[0]][start_pos[1]] = reset_pos
 
         pos.update_img(end_pos)
+        MOVE_SFX.play()
+
+        return True
+    
+
+    def generate_moveset(self) -> None:
+
+        moveset = None
+        for x, y in itertools.product(range(self.ranks), range(self.files)):
+            if self.board[x][y] != 0 and self.board[x][y].selected:
+                moveset = self.board[x][y].moveset(self.board)
+                
+        return moveset
+    
+
+    def check_move(self, rank, file, pos) -> None:
+
+        self.generate_moveset()
+
+        moves = self.board[pos[0]][pos[1]].moveset(self.board)
+        piece = self.board[pos[0]][pos[1]]
+
+        if (file, rank) in moves:
+            self.move(pos, (rank, file))
+            print(f'{piece}: {self.notation(pos[0], pos[1])} ➟ {self.notation(rank, file)}')
+            self.reset_selection()
+            self.change_turn()
+            self.clicks = 0
 
 
     def play_move(self, rank, file) -> None:
