@@ -81,6 +81,7 @@ class Board:
             self.clicks += 1
             self.move(pos, (rank, file))
             self.reset_selection()
+            self.change_turn()
         
     
     def reset_selection(self) -> None:
