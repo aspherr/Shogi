@@ -109,6 +109,52 @@ class Board:
             self.current_player = 'sente'
 
 
+    def generate_moveset(self) -> list:
+
+        moveset = []
+        for x, y in itertools.product(range(self.ranks), range(self.files)):
+            if self.board[x][y] != 0 and self.board[x][y].selected:
+                moveset.extend(iter(self.board[x][y].moveset(self.board)))
+                
+        return moveset
+
+
+    def generate_opp_moveset(self) -> list:
+
+        moveset = []
+        for x, y in itertools.product(range(self.ranks), range(self.files)):
+            if self.board[x][y] != 0 and self.board[x][y].player != self.current_player:
+                moveset.extend(iter(self.board[x][y].moveset(self.board)))
+
+        return moveset
+    
+
+    def find_king(self) -> tuple:
+        
+        pos = (4, 8) if self.current_player == 'sente' else (4, 0)
+        for x, y in itertools.product(range(self.ranks), range(self.files)):
+            if (self.board[x][y] != 0 
+                and self.board[x][y].player == self.current_player 
+                and self.board[x][y].is_king is True):
+                pos = (y, x)
+        
+        return pos
+
+
+    def king_in_check(self) -> bool:
+
+        king_pos = self.find_king()
+
+        if king_pos in self.generate_opp_moveset():
+            self.board[king_pos[1]][king_pos[0]].in_check = True
+            return True
+        
+        elif (self.current_player != self.current_player 
+              or self.board[king_pos[1]][king_pos[0]].in_check is False):
+            self.board[king_pos[1]][king_pos[0]].in_check = False
+            return False
+
+        
     def move(self, start_pos, end_pos) -> bool:
         
         pos = self.board[start_pos[0]][start_pos[1]]
@@ -125,30 +171,18 @@ class Board:
         return True
     
 
-    def generate_moveset(self) -> None:
-
-        moveset = None
-        for x, y in itertools.product(range(self.ranks), range(self.files)):
-            if self.board[x][y] != 0 and self.board[x][y].selected:
-                moveset = self.board[x][y].moveset(self.board)
-                
-        return moveset
-    
-
     def check_move(self, rank, file, pos) -> None:
 
         self.generate_moveset()
 
         moves = self.board[pos[0]][pos[1]].moveset(self.board)
-        piece = self.board[pos[0]][pos[1]]
 
         if (file, rank) in moves:
             self.move(pos, (rank, file))
-            print(f'{piece}: {self.notation(pos[0], pos[1])} ➟ {self.notation(rank, file)}')
             self.reset_selection()
             self.change_turn()
             self.clicks = 0
-
+        
 
     def play_move(self, rank, file) -> None:
         

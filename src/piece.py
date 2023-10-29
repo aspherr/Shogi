@@ -9,6 +9,8 @@ class Piece:
         self.player = player
 
         self.selected = False
+        self.is_king = False
+        self.in_check = False
 
 
     def get_piece(self, board) -> pygame.image:
@@ -502,6 +504,7 @@ class King(Piece):
     id = 8
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)
+        self.is_king = True
     
     def __repr__(self) -> str:
         return 'King'
