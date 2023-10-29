@@ -111,9 +111,13 @@ class Piece:
         if self.selected:
             pygame.draw.rect(
                 WINDOW, GREY2, (self.get_piece_pos()[0]-4, self.get_piece_pos()[1]-1, 60, 60), 0
-                )
-            
+                )            
             self.render_moves(board)
+        
+        if self.in_check:
+            pygame.draw.rect(
+                WINDOW, RED, (self.get_piece_pos()[0]-4, self.get_piece_pos()[1]-1, 60, 60), 1
+            )
         
 
 class Pawn(Piece):

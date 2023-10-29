@@ -182,6 +182,7 @@ class Board:
             self.reset_selection()
             self.change_turn()
             self.clicks = 0
+            self.king_in_check()
         
 
     def play_move(self, rank, file) -> None:
