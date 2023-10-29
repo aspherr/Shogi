@@ -58,30 +58,6 @@ class Board:
             if self.board[x][y] != 0:
                     WINDOW.blit(self.board[x][y].get_piece(self.board), (self.board[x][y].get_piece_pos()))
     
-
-    def selected(self, rank, file, pos) -> None:
-
-        if (self.board[rank][file] != 0 
-                and self.board[rank][file].player == self.current_player):
-            
-            self.reset_selection()
-            self.board[rank][file].selected = True
-
-            if self.board[pos[0]][pos[1]] != self.board[rank][file]:
-                self.clicks = 1
-            
-            else:
-                self.clicks += 1
-            
-            if self.clicks == 2:
-                self.clicks = 0
-                self.reset_selection()
-        
-        elif pos != (rank, file):
-            self.clicks += 1
-            self.check_move(rank, file, pos)
-            self.reset_selection()
-           
     
     def reset_selection(self) -> None:
 
@@ -154,7 +130,28 @@ class Board:
             self.board[king_pos[1]][king_pos[0]].in_check = False
             return False
 
-        
+
+    def check_restrictions(self, start_pos, end_pos) -> bool:
+
+        prev_check = self.king_in_check()
+        self.generate_moveset()
+
+        if self.king_in_check() or (prev_check is True and self.king_in_check()):
+
+            pos = self.board[end_pos[0]][end_pos[1]]
+            reset_pos = 0
+            
+            pos.update_img(start_pos)
+
+            self.board[start_pos[0]][start_pos[1]] = pos
+            self.board[end_pos[0]][end_pos[1]] = reset_pos
+
+            return False
+
+        MOVE_SFX.play()
+        return True
+
+
     def move(self, start_pos, end_pos) -> bool:
         
         pos = self.board[start_pos[0]][start_pos[1]]
@@ -166,23 +163,50 @@ class Board:
         self.board[start_pos[0]][start_pos[1]] = reset_pos
 
         pos.update_img(end_pos)
-        MOVE_SFX.play()
+        
+        valid_move = self.check_restrictions(start_pos, end_pos)
+        return valid_move is not False
 
-        return True
-    
 
-    def check_move(self, rank, file, pos) -> None:
+    def validate_move(self, rank, file, pos) -> None:
 
         self.generate_moveset()
+        move_made = False
 
         moves = self.board[pos[0]][pos[1]].moveset(self.board)
 
         if (file, rank) in moves:
-            self.move(pos, (rank, file))
+            move_made = self.move(pos, (rank, file))
             self.reset_selection()
+        
+        if move_made:
             self.change_turn()
-            self.clicks = 0
-            self.king_in_check()
+        
+        self.clicks = 0
+
+
+    def selected(self, rank, file, pos) -> None:
+
+        if (self.board[rank][file] != 0 
+                and self.board[rank][file].player == self.current_player):
+            
+            self.reset_selection()
+            self.board[rank][file].selected = True
+
+            if self.board[pos[0]][pos[1]] != self.board[rank][file]:
+                self.clicks = 1
+            
+            else:
+                self.clicks += 1
+            
+            if self.clicks == 2:
+                self.clicks = 0
+                self.reset_selection()
+        
+        elif pos != (rank, file):
+            self.clicks += 1
+            self.validate_move(rank, file, pos)
+            self.reset_selection()
         
 
     def play_move(self, rank, file) -> None:
