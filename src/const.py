@@ -35,6 +35,7 @@ RED = (255, 65, 65)
 UI_SFX = pygame.mixer.Sound(os.path.join('assets', 'sfx', '002-navigation.wav'))
 UI_CLICK_SFX = pygame.mixer.Sound(os.path.join('assets', 'sfx', '002-navigation-click.wav'))
 MOVE_SFX = pygame.mixer.Sound(os.path.join('assets', 'sfx', '005-move.wav'))
+CHECK_SFX = pygame.mixer.Sound(os.path.join('assets', 'sfx', '007-check.wav'))
 
 
 """ SPRITES """

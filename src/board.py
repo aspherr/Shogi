@@ -126,7 +126,8 @@ class Board:
             return True
         
         elif (self.current_player != self.current_player 
-              or self.board[king_pos[1]][king_pos[0]].in_check is False):
+              or self.board[king_pos[1]][king_pos[0]].in_check):
+            
             self.board[king_pos[1]][king_pos[0]].in_check = False
             return False
 
@@ -181,6 +182,10 @@ class Board:
         
         if move_made:
             self.change_turn()
+            
+            if self.king_in_check():
+                MOVE_SFX.stop()
+                CHECK_SFX.play()
         
         self.clicks = 0
 
