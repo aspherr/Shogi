@@ -132,7 +132,7 @@ class Board:
             return False
 
 
-    def check_restrictions(self, start_pos, end_pos) -> bool:
+    def check_restrictions(self, start_pos, end_pos, king_pos) -> bool:
 
         prev_check = self.king_in_check()
         self.generate_moveset()
@@ -147,6 +147,7 @@ class Board:
             self.board[start_pos[0]][start_pos[1]] = pos
             self.board[end_pos[0]][end_pos[1]] = reset_pos
 
+            self.board[king_pos[1]][king_pos[0]].in_check = False
             return False
 
         MOVE_SFX.play()
@@ -155,6 +156,7 @@ class Board:
 
     def move(self, start_pos, end_pos) -> bool:
         
+        king_pos = self.find_king()
         pos = self.board[start_pos[0]][start_pos[1]]
         reset_pos = 0
 
@@ -165,7 +167,7 @@ class Board:
 
         pos.update_img(end_pos)
         
-        valid_move = self.check_restrictions(start_pos, end_pos)
+        valid_move = self.check_restrictions(start_pos, end_pos, king_pos)
         return valid_move is not False
 
 
@@ -176,10 +178,10 @@ class Board:
 
         moves = self.board[pos[0]][pos[1]].moveset(self.board)
 
-        if (file, rank) in moves:
+        if (file, rank) in moves:            
             move_made = self.move(pos, (rank, file))
             self.reset_selection()
-        
+            
         if move_made:
             self.change_turn()
             
