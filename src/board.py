@@ -143,6 +143,7 @@ class Board:
             reset_pos = 0
             
             pos.update_img(start_pos)
+            MOVE_SFX.stop()
 
             self.board[start_pos[0]][start_pos[1]] = pos
             self.board[end_pos[0]][end_pos[1]] = reset_pos
@@ -150,7 +151,6 @@ class Board:
             self.board[king_pos[1]][king_pos[0]].in_check = False
             return False
 
-        MOVE_SFX.play()
         return True
 
 
@@ -161,6 +161,15 @@ class Board:
         reset_pos = 0
 
         pos.rank, pos.file = end_pos[0], end_pos[1]
+
+        if (self.board[end_pos[0]][end_pos[1]] != 0
+            and self.board[end_pos[0]][end_pos[1]].player != self.current_player
+            and str(self.board[end_pos[0]][end_pos[1]] != 'king')):
+
+            CAPTURE_SFX.play()
+        
+        else:
+            MOVE_SFX.play()
         
         self.board[end_pos[0]][end_pos[1]] = pos
         self.board[start_pos[0]][start_pos[1]] = reset_pos
@@ -187,6 +196,7 @@ class Board:
             
             if self.king_in_check():
                 MOVE_SFX.stop()
+                CAPTURE_SFX.stop()
                 CHECK_SFX.play()
         
         self.clicks = 0
