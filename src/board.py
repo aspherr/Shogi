@@ -1,7 +1,14 @@
 import itertools
 from const import WINDOW, MOVE_SFX, CAPTURE_SFX, CHECK_SFX
-from piece import Pawn, Lance, Knight, SilverGeneral, GoldGeneral, Bishop, Rook, King
 
+from pieces.pawn import Pawn
+from pieces.lance import Lance
+from pieces.knight import Knight
+from pieces.silver_general import SilverGeneral
+from pieces.gold_general import GoldGeneral
+from pieces.bishop import Bishop
+from pieces.rook import Rook
+from pieces.king import King
 
 class Board:
     def __init__(self, ranks=9, files=9) -> None:
