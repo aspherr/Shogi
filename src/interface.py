@@ -270,7 +270,7 @@ class Game:
             WINDOW.blit(BACKGROUND[1], (0, 0))
 
             WINDOW.blit(BOARD_SPRITE, (63, -15))
-            WINDOW.blit(KOMA1_SPRITE, (800, 65))
+            WINDOW.blit(KOMA1_SPRITE, (780, 65))
             WINDOW.blit(KOMA2_SPRITE, (20, 65))
 
             self.board.render_pieces()
