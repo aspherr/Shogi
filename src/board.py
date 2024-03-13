@@ -166,9 +166,14 @@ class Board:
             self.board[start_pos[0]][start_pos[1]] = pos
             self.board[end_pos[0]][end_pos[1]] = reset_pos
 
-            self.board[king_pos[1]][king_pos[0]].in_check = False
-            return False
+            if self.king_in_check():
+                self.board[king_pos[1]][king_pos[0]].in_check = True
 
+            else:
+                self.board[king_pos[1]][king_pos[0]].in_check = False
+
+            return False
+ 
         return True
 
     def move(self, start_pos, end_pos) -> bool:
@@ -181,7 +186,7 @@ class Board:
         if (
             self.board[end_pos[0]][end_pos[1]] != 0
             and self.board[end_pos[0]][end_pos[1]].player != self.current_player
-            and str(self.board[end_pos[0]][end_pos[1]] != "king")
+            and str(self.board[end_pos[0]][end_pos[1]]) != "king"
         ):
             CAPTURE_SFX.play()
 
