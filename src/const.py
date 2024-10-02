@@ -2,6 +2,7 @@ import pygame
 import os
 
 pygame.init()
+pygame.font.init()
 
 """ WINDOW """
 WIDTH, HEIGHT = 900, 700
@@ -218,5 +219,5 @@ LEFT, RIGHT = 0, 8
 
 """ FONTS """
 
-FONT_1 = pygame.font.SysFont("Savior", 80)
-FONT_2 = pygame.font.SysFont("Savior", 50)
+FONT_1 = pygame.font.Font("assets/fonts/savior.ttf", 80)
+FONT_2 = pygame.font.Font("assets/fonts/savior.ttf", 50)
