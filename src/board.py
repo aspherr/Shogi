@@ -66,37 +66,37 @@ class Board:
             self.board[8][i] = bottom_rank_pieces[i](8, i, "sente")
 
         for i in range(9):
-            self.board[6][i] = Pawn(6, i, "sente")  # pyright: ignore
+            self.board[6][i] = Pawn(6, i, "sente")  
 
-        self.board[7][1] = Bishop(7, 1, "sente")  # pyright: ignore
-        self.board[7][7] = Rook(7, 7, "sente")  # pyright: ignore
+        self.board[7][1] = Bishop(7, 1, "sente")  
+        self.board[7][7] = Rook(7, 7, "sente")  
 
         for i in range(9):
             self.board[0][i] = bottom_rank_pieces[i](0, i, "gote")
 
         for i in range(9):
-            self.board[2][i] = Pawn(2, i, "gote")  # pyright: ignore
+            self.board[2][i] = Pawn(2, i, "gote")  
 
-        self.board[1][7] = Bishop(1, 7, "gote")  # pyright: ignore
-        self.board[1][1] = Rook(1, 1, "gote")  # pyright: ignore
+        self.board[1][7] = Bishop(1, 7, "gote")  
+        self.board[1][1] = Rook(1, 1, "gote")  
 
     def render_pieces(self) -> None:
         for x, y in itertools.product(range(self.ranks), range(self.files)):
             if self.board[x][y] != 0:
                 WINDOW.blit(
-                    self.board[x][y].get_piece(self.board),  # pyright: ignore
-                    (self.board[x][y].get_piece_pos()),  # pyright: ignore
+                    self.board[x][y].get_piece(self.board),  
+                    (self.board[x][y].get_piece_pos()),  
                 )
 
     def reset_selection(self) -> None:
         for x, y in itertools.product(range(self.ranks), range(self.files)):
             if self.board[x][y] != 0:
-                self.board[x][y].selected = False  # pyright: ignore
+                self.board[x][y].selected = False  
 
     def get_current_pos(self, rank, file) -> tuple:
         pos = rank, file
         for x, y in itertools.product(range(self.ranks), range(self.files)):
-            if self.board[x][y] != 0 and self.board[x][y].selected is True:  # pyright: ignore
+            if self.board[x][y] != 0 and self.board[x][y].selected is True:  
                 pos = x, y
 
         return pos
@@ -111,16 +111,16 @@ class Board:
     def generate_moveset(self) -> list:
         moveset = []
         for x, y in itertools.product(range(self.ranks), range(self.files)):
-            if self.board[x][y] != 0 and self.board[x][y].selected:  # pyright: ignore
-                moveset.extend(iter(self.board[x][y].moveset(self.board)))  # pyright: ignore
+            if self.board[x][y] != 0 and self.board[x][y].selected:  
+                moveset.extend(iter(self.board[x][y].moveset(self.board)))  
 
         return moveset
 
     def generate_opp_moveset(self) -> list:
         moveset = []
         for x, y in itertools.product(range(self.ranks), range(self.files)):
-            if self.board[x][y] != 0 and self.board[x][y].player != self.current_player:  # pyright: ignore
-                moveset.extend(iter(self.board[x][y].moveset(self.board)))  # pyright: ignore
+            if self.board[x][y] != 0 and self.board[x][y].player != self.current_player:  
+                moveset.extend(iter(self.board[x][y].moveset(self.board)))  
 
         return moveset
 
@@ -129,8 +129,8 @@ class Board:
         for x, y in itertools.product(range(self.ranks), range(self.files)):
             if (
                 self.board[x][y] != 0
-                and self.board[x][y].player == self.current_player  # pyright: ignore
-                and self.board[x][y].is_king is True  # pyright: ignore
+                and self.board[x][y].player == self.current_player  
+                and self.board[x][y].is_king is True  
             ):
                 pos = (y, x)
 
@@ -159,13 +159,13 @@ class Board:
         if self.king_in_check() or (prev_check is True and self.king_in_check()):
             pos = self.board[end_pos[0]][end_pos[1]]
             reset_pos = 0
-
+            
             pos.update_img(start_pos)
             MOVE_SFX.stop()
 
             self.board[start_pos[0]][start_pos[1]] = pos
             self.board[end_pos[0]][end_pos[1]] = reset_pos
-
+            
             if self.king_in_check():
                 self.board[king_pos[1]][king_pos[0]].in_check = True
 
@@ -179,27 +179,31 @@ class Board:
     def move(self, start_pos, end_pos) -> bool:
         king_pos = self.find_king()
         pos = self.board[start_pos[0]][start_pos[1]]
+        target_pos = self.board[end_pos[0]][end_pos[1]]
         reset_pos = 0
 
         pos.rank, pos.file = end_pos[0], end_pos[1]
-
-        if (
-            self.board[end_pos[0]][end_pos[1]] != 0
-            and self.board[end_pos[0]][end_pos[1]].player != self.current_player
-            and str(self.board[end_pos[0]][end_pos[1]]) != "king"
-        ):
-            CAPTURE_SFX.play()
-
-        else:
-            MOVE_SFX.play()
-
         self.board[end_pos[0]][end_pos[1]] = pos
         self.board[start_pos[0]][start_pos[1]] = reset_pos
 
-        pos.update_img(end_pos)
-
         valid_move = self.check_restrictions(start_pos, end_pos, king_pos)
-        return valid_move is not False
+        if not valid_move:
+            self.board[start_pos[0]][start_pos[1]] = pos
+            self.board[end_pos[0]][end_pos[1]] = target_pos
+            return False
+
+        if (
+            target_pos != 0
+            and target_pos.player != self.current_player
+            and str(target_pos) != "king"
+        ):
+            CAPTURE_SFX.play()
+        
+        else:
+            MOVE_SFX.play()
+
+        pos.update_img(end_pos)
+        return True  
 
     def validate_move(self, rank, file, pos) -> None:
         self.generate_moveset()

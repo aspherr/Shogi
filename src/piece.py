@@ -28,10 +28,10 @@ class Piece:
 
     def get_piece(self, board) -> pygame.Surface:
         if self.player == "sente":
-            piece = SENTE_PIECES[self.id - 1]  # pyright: ignore
+            piece = SENTE_PIECES[self.id - 1]  
 
         else:
-            piece = GOTE_PIECES[self.id - 1]  # pyright: ignore
+            piece = GOTE_PIECES[self.id - 1]  
 
         self.render_selection(board)
         return piece
@@ -93,11 +93,11 @@ class Piece:
                 captures.append((pos[0], pos[1]))
 
     def moveset(self, board) -> list:
-        moveset, _ = self.moves(board)  # pyright: ignore
+        moveset, _ = self.moves(board)  
         return moveset
 
     def render_moves(self, board) -> None:
-        moves, captures = self.moves(board)  # pyright: ignore
+        moves, captures = self.moves(board)  
         moves, captures = list(moves), list(captures)
 
         for i in captures:
