@@ -18,6 +18,9 @@ class Board:
         self.init_board()
 
         self.current_player = "sente"
+        self.game_over = False
+        self.winner = ''
+        self.reason_for_win = ''
         self.clicks = 0
 
     def notation(self, rank, file) -> str:
@@ -61,7 +64,7 @@ class Board:
             Knight,
             Lance,
         ]
-
+        
         for i in range(9):
             self.board[8][i] = bottom_rank_pieces[i](8, i, "sente")
 
@@ -168,14 +171,35 @@ class Board:
             
             if self.king_in_check():
                 self.board[king_pos[1]][king_pos[0]].in_check = True
-
+                    
             else:
                 self.board[king_pos[1]][king_pos[0]].in_check = False
 
             return False
  
         return True
+    
+    def checkmate(self) -> bool:
+        king_position = self.find_king()
+        kings_moves = []
 
+        for x, y in itertools.product(range(self.ranks), range(self.files)):
+            if (
+                self.board[x][y] != 0 and 
+                str(self.board[x][y]) == 'king' and
+                self.board[x][y].player == self.current_player):  
+                kings_moves.extend(iter(self.board[x][y].moveset(self.board)))
+                        
+        safe_moves = []
+        for move in self.generate_opp_moveset():
+            if move not in kings_moves:
+                safe_moves.append(move)
+
+        if len(safe_moves) == 0:
+            return True
+
+        return False
+    
     def move(self, start_pos, end_pos) -> bool:
         king_pos = self.find_king()
         pos = self.board[start_pos[0]][start_pos[1]]
@@ -187,7 +211,7 @@ class Board:
         self.board[start_pos[0]][start_pos[1]] = reset_pos
 
         valid_move = self.check_restrictions(start_pos, end_pos, king_pos)
-        if not valid_move:
+        if not valid_move:            
             self.board[start_pos[0]][start_pos[1]] = pos
             self.board[end_pos[0]][end_pos[1]] = target_pos
             return False
@@ -217,12 +241,15 @@ class Board:
 
         if move_made:
             self.change_turn()
-
-            if self.king_in_check():
+            
+            if self.checkmate():
+                print(f"checkmate! {self.current_player} wins!")
+                        
+            elif self.king_in_check():
                 MOVE_SFX.stop()
                 CAPTURE_SFX.stop()
                 CHECK_SFX.play()
-
+                                        
         self.clicks = 0
 
     def selected(self, rank, file, pos) -> None:
