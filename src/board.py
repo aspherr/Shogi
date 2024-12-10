@@ -180,7 +180,6 @@ class Board:
         return True
     
     def checkmate(self) -> bool:
-        king_position = self.find_king()
         kings_moves = []
 
         for x, y in itertools.product(range(self.ranks), range(self.files)):
