@@ -12,7 +12,7 @@ from const import (
     RIGHT,
     GREY2,
     GREEN,
-    RED,
+    RED
 )
 
 
@@ -23,6 +23,7 @@ class Piece:
         self.player = player
 
         self.selected = False
+        self.koma_selected = False
         self.is_king = False
         self.in_check = False
 
@@ -137,4 +138,22 @@ class Piece:
                 (self.get_piece_pos()[0] - 4, self.get_piece_pos()[1] - 1, 60, 60),
                 1,
             )
+    
+    def render_drop_moves(self, moves):        
+        for move in moves:
+            x = int(BOARD_X + (move[1] * BOARD_TILE_SIZE)) + 1
+            y = int(BOARD_Y + (move[0] * BOARD_TILE_SIZE)) + 1
 
+            pygame.draw.rect(WINDOW, GREY2, (int(x), int(y), 60, 60), 0)   
+            
+    def render_koma_pieces(self, piece, position, moves) -> None:
+        
+        if self.koma_selected and self.player == 'gote':
+            pygame.draw.rect(WINDOW, GREY2, (position[0] - 4, position[1] - 3, 60, 60), 0)
+            self.render_drop_moves(moves)
+        
+        elif self.koma_selected and self.player == 'sente':
+            pygame.draw.rect(WINDOW, GREY2, (position[0] - 4, position[1] - 1, 60, 60), 0)
+            self.render_drop_moves(moves)
+            
+        WINDOW.blit(piece, position)

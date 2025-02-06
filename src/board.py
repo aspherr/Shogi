@@ -1,5 +1,6 @@
 import itertools
-from const import WINDOW, MOVE_SFX, CAPTURE_SFX, CHECK_SFX
+from typing import Tuple
+from const import WINDOW, MOVE_SFX, CAPTURE_SFX, CHECK_SFX, SENTE_PIECES, GOTE_PIECES, KOMA1_X, KOMA2_X
 
 from pieces.pawn import Pawn
 from pieces.lance import Lance
@@ -72,7 +73,9 @@ class Board:
             self.board[6][i] = Pawn(6, i, "sente")  
 
         self.board[7][1] = Bishop(7, 1, "sente")  
-        self.board[7][7] = Rook(7, 7, "sente")  
+        self.board[7][7] = Rook(7, 7, "sente")
+        
+        self.sente_captures = {"Pawn":[],'Lance':[],'Knight':[],'Silver General':[],'Gold General':[],'Bishop':[],'Rook':[]}
 
         for i in range(9):
             self.board[0][i] = bottom_rank_pieces[i](0, i, "gote")
@@ -81,20 +84,104 @@ class Board:
             self.board[2][i] = Pawn(2, i, "gote")  
 
         self.board[1][7] = Bishop(1, 7, "gote")  
-        self.board[1][1] = Rook(1, 1, "gote")  
-
-    def render_pieces(self) -> None:
+        self.board[1][1] = Rook(1, 1, "gote")
+        
+        self.gote_captures = {"Pawn":[],'Lance':[],'Knight':[],'Silver General':[],'Gold General':[],'Bishop':[],'Rook':[]}
+        
+        
+        self.captured_pieces = {"sente": self.sente_captures, "gote": self.gote_captures}
+        self.captured_select = [[0],[0],[0],[0],[0],[0],[0]]
+        
+    def render_pieces(self, moves) -> None:
         for x, y in itertools.product(range(self.ranks), range(self.files)):
             if self.board[x][y] != 0:
                 WINDOW.blit(
                     self.board[x][y].get_piece(self.board),  
                     (self.board[x][y].get_piece_pos()),  
                 )
-
+                
+        players = ["sente", "gote"]
+        for player in players:
+            for capture in self.captured_pieces.get(player):
+                if len(self.captured_pieces.get(player).get(capture)) > 0:
+                    
+                    if player == 'sente':
+                        piece, position = self.get_sente(88, capture, 61)
+                        
+                    else:
+                        piece, position = self.get_gote(220, capture, 61) 
+                    
+                    self.captured_pieces.get(player).get(capture)[0].render_koma_pieces(piece, position, moves)
+                    
+    def get_sente(self, base, capture, offset) -> Tuple[str, int]:
+        match capture:
+            case 'Pawn':
+                piece = SENTE_PIECES[0]
+                base += (6*offset)
+            
+            case 'Lance':
+                piece = SENTE_PIECES[1]
+                base += (5*offset)
+            
+            case 'Silver General':
+                piece = SENTE_PIECES[3]
+                base += (3*offset)
+            
+            case 'Gold General':
+                piece = SENTE_PIECES[4]
+                base += (2*offset)
+            
+            case 'Rook':
+                piece = SENTE_PIECES[6]
+            
+            case 'Knight':
+                piece = SENTE_PIECES[2]
+                base += (4*offset)
+            
+            case 'Bishop':
+                piece = SENTE_PIECES[5]
+                base += (1*offset)
+        
+        return piece, (int(KOMA1_X) + 5, base)
+                
+                
+    def get_gote(self, base, capture, offset) -> Tuple[str, int]:
+        match capture:
+            case 'Pawn':
+                piece = GOTE_PIECES[0]
+                
+            case 'Lance':
+                piece = GOTE_PIECES[1]
+                base += (1*offset)
+            
+            case 'Silver General':
+                piece = GOTE_PIECES[3]
+                base += (3*offset)
+            
+            case 'Gold General':
+                piece = GOTE_PIECES[4]
+                base += (4*offset)
+            
+            case 'Rook':
+                piece = GOTE_PIECES[6]
+                base += (6*offset)
+            
+            case 'Knight':
+                piece = GOTE_PIECES[2]
+                base += (2*offset)
+            
+            case 'Bishop':
+                piece = GOTE_PIECES[5]
+                base += (5*offset)
+                
+        return piece, (int(KOMA2_X) + 5, base)
+                
     def reset_selection(self) -> None:
         for x, y in itertools.product(range(self.ranks), range(self.files)):
             if self.board[x][y] != 0:
-                self.board[x][y].selected = False  
+                self.board[x][y].selected = False
+        
+        self.captured_select = [False, False, False, False, False, False, False] 
 
     def get_current_pos(self, rank, file) -> tuple:
         pos = rank, file
@@ -110,7 +197,9 @@ class Board:
 
         else:
             self.current_player = "sente"
-
+        
+        self.captured_select = [False, False, False, False, False, False, False]
+        
     def generate_moveset(self) -> list:
         moveset = []
         for x, y in itertools.product(range(self.ranks), range(self.files)):
@@ -220,6 +309,9 @@ class Board:
             and target_pos.player != self.current_player
             and str(target_pos) != "king"
         ):
+            new_capture = target_pos          
+            new_capture.player = self.current_player
+            self.captured_pieces.get(self.current_player).get(str(new_capture)).append(new_capture)
             CAPTURE_SFX.play()
         
         else:
@@ -273,6 +365,80 @@ class Board:
             self.clicks += 1
             self.validate_move(rank, file, pos)
             self.reset_selection()
+          
+            
+    def in_koma(self, koma, piece) -> bool:
+        return piece in koma
+        
+    def valid_drop(self) -> bool:
+        return [(x, y) for x, y in itertools.product(range(self.ranks), range(self.files)) if self.board[x][y] == 0]
 
+    def reset_koma_selection(self, rank, pieces) -> None:
+        for i in range(len(self.captured_select)-1):
+            if i == rank:
+                continue    
+            
+            if self.captured_select[i]:
+                character = pieces[i]
+                self.captured_pieces[self.current_player][character][0].koma_selected = False
+                break
+        
+    def komadai_selection(self, index, players, pieces, rank) -> None:
+            
+        if (self.current_player == players["sente"] and index == 0):
+            
+            piece = pieces[rank]
+                        
+            if len(self.captured_pieces[self.current_player][piece]) > 0:
+                if self.captured_select[rank]:
+                    self.captured_pieces[self.current_player][piece][0].koma_selected = False
+
+                else: 
+                    self.captured_pieces[self.current_player][piece][0].koma_selected = True    
+                    self.reset_koma_selection(rank, pieces) 
+                    self.reset_selection()
+
+                self.captured_select[rank] = not self.captured_select[rank]
+
+
+        elif self.current_player == players["gote"] and index == 1:
+            piece = pieces[-(rank-6)]            
+
+            if len(self.captured_pieces[self.current_player][piece]) > 0:
+                if self.captured_select[-(rank-6)]:
+                    self.captured_pieces[self.current_player][piece][0].koma_selected = False
+
+                else:
+                    self.captured_pieces[self.current_player][piece][0].koma_selected = True
+                    self.reset_koma_selection(-(rank-6), pieces)  
+                    self.reset_selection()
+
+                self.captured_select[-(rank-6)] = not self.captured_select[-(rank-6)]
+
+    def reinstate_piece(self, index, rank, file) -> None:
+        players = {"sente": "gote", "gote": "sente"}
+        pieces = ('Pawn', 'Lance', 'Knight', 'Silver General', 'Gold General', 'Bishop', 'Rook')
+
+        if self.in_koma(self.captured_select, True) and file != 7 and index == 10:
+            select = self.captured_select.index(True)
+            piece = pieces[select]
+                                
+            if (rank, file) in self.valid_drop():
+                self.captured_pieces[self.current_player][piece][0].koma_selected = False                    
+                piece_draw = self.captured_pieces[self.current_player][piece].pop()
+
+                self.board[rank][file] = piece_draw
+                piece_draw.rank, piece_draw.file = rank, file
+                MOVE_SFX.play()
+                
+                self.checkmate()
+
+                self.captured_select[select] = False
+                self.change_turn() 
+                return
+
+        self.komadai_selection(index, players, pieces, rank)
+        
     def play_move(self, rank, file) -> None:
         self.selected(rank, file, self.get_current_pos(rank, file))
+        self.reinstate_piece(10, rank, file)

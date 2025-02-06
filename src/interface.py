@@ -7,6 +7,9 @@ from board import Board
 from const import (
     BACKGROUND,
     BOARD_SIZE,
+    KOMA1_SIZE,
+    KOMA2_SIZE,
+    KOMA_TILE_SIZE,
     BOARD_SLIDES,
     BOARD_SPRITE,
     BOARD_TILE_SIZE,
@@ -24,7 +27,7 @@ from const import (
     UI_CLICK_SFX,
     UI_SFX,
     WHITE,
-    WINDOW,
+    WINDOW
 )
 
 
@@ -249,6 +252,12 @@ class Game:
 
             return int(my // BOARD_TILE_SIZE), int(mx // BOARD_TILE_SIZE)
 
+        elif type == 'komadai':
+            mx -= dimensions[0]
+            my -= dimensions[1]
+
+            return int(my // KOMA_TILE_SIZE), 9  
+
         return (-1, -1)
 
     def get_mouse_pos(self, pos) -> tuple:
@@ -259,12 +268,26 @@ class Game:
             and BOARD_SIZE[1] < y < BOARD_SIZE[1] + BOARD_SIZE[3]
         ):
             return self.calc_pos(x, y, BOARD_SIZE, "board")
+        
+        if (
+            
+            KOMA1_SIZE[0] < x < KOMA1_SIZE[0] + KOMA1_SIZE[2] and
+            KOMA1_SIZE[1] < y < KOMA1_SIZE[1] + KOMA1_SIZE[3]
+        ):
+            return self.calc_pos(x, y, KOMA1_SIZE, "komadai")
+                                    
+        if (
+            KOMA2_SIZE[0] < x < KOMA2_SIZE[0] + KOMA2_SIZE[2] and
+            KOMA2_SIZE[1] < y < KOMA2_SIZE[1] + KOMA2_SIZE[3]
+        ):
+            return self.calc_pos(x, y, KOMA2_SIZE, "komadai")
 
         return (-1, -1)
 
     def window(self):
-        pygame.display.set_caption("SHOGI ENGINE")
-
+        pygame.display.set_caption("SHOGI")
+        board = Board()
+        
         running = True
         while running:
             WINDOW.blit(BACKGROUND[1], (0, 0))
@@ -273,7 +296,7 @@ class Game:
             WINDOW.blit(KOMA1_SPRITE, (780, 65))
             WINDOW.blit(KOMA2_SPRITE, (20, 65))
 
-            self.board.render_pieces()
+            self.board.render_pieces(board.valid_drop())
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -299,6 +322,21 @@ class Game:
             ):
                 mx_rank, my_file = self.get_mouse_pos(mouse_position)
                 self.board.play_move(mx_rank, my_file)
+                
+            if (
+                
+                KOMA1_SIZE[0] < mx < KOMA1_SIZE[0] + KOMA1_SIZE[2] and
+                KOMA1_SIZE[1] < my < KOMA1_SIZE[1] + KOMA1_SIZE[3]
+            ):
+                mouse_rank, mouse_file = self.get_mouse_pos(mouse_position)    
+                self.board.reinstate_piece(1, mouse_rank, mouse_file)
+                                    
+            elif (
+                KOMA2_SIZE[0] < mx < KOMA2_SIZE[0] + KOMA2_SIZE[2] and
+                KOMA2_SIZE[1] < my < KOMA2_SIZE[1] + KOMA2_SIZE[3]
+            ):
+                mouse_rank, mouse_file = self.get_mouse_pos(mouse_position)  
+                self.board.reinstate_piece(0, mouse_rank, mouse_file)
 
 
 class Manual:
