@@ -286,7 +286,6 @@ class Game:
 
     def window(self):
         pygame.display.set_caption("SHOGI")
-        board = Board()
         
         running = True
         while running:
@@ -296,7 +295,7 @@ class Game:
             WINDOW.blit(KOMA1_SPRITE, (780, 65))
             WINDOW.blit(KOMA2_SPRITE, (20, 65))
 
-            self.board.render_pieces(board.valid_drop())
+            self.board.render_pieces(self.board.valid_drop())
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

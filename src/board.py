@@ -41,7 +41,7 @@ class Board:
         files_dict = {
             "一": 0,
             "二": 1,
-            "三": 2,
+            "三": 2,    
             "四": 3,
             "五": 4,
             "六": 5,
@@ -110,7 +110,7 @@ class Board:
                         
                     else:
                         piece, position = self.get_gote(220, capture, 61) 
-                    
+                        
                     self.captured_pieces.get(player).get(capture)[0].render_koma_pieces(piece, position, moves)
                     
     def get_sente(self, base, capture, offset) -> Tuple[str, int]:
@@ -365,8 +365,7 @@ class Board:
             self.clicks += 1
             self.validate_move(rank, file, pos)
             self.reset_selection()
-          
-            
+                   
     def in_koma(self, koma, piece) -> bool:
         return piece in koma
         
