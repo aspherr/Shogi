@@ -1,4 +1,5 @@
 .DS_Store
 taskell.md
+.python-version
 src/__pycache__
 src/pieces/__pycache__

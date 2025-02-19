@@ -195,6 +195,18 @@ SENTE_PIECES = [
     for img in SENTE_PIECES_SPRITES
 ]
 
+PROMOTED_SENTE_PIECES_SPRITES = [
+    "009-PP1",
+    "010-PL1",
+    "011-PN1",
+    "012-PS1",
+    "013-PB1",
+    "014-PR1"
+]
+PROMOTED_SENTE_PIECES = [
+    pygame.image.load(os.path.join("assets", "sprites", "pieces", f"{img}.png"))
+    for img in PROMOTED_SENTE_PIECES_SPRITES
+]
 
 GOTE_PIECES_SPRITES = [
     "015-P2",
@@ -211,6 +223,19 @@ GOTE_PIECES = [
     for img in GOTE_PIECES_SPRITES
 ]
 
+PROMOTED_GOTE_PIECES_SPRITES = [
+    "023-PP2",
+    "024-PL2",
+    "025-PN2",
+    "026-PS2",
+    "027-PB2",
+    "028-PR2"
+]
+PROMOTED_GOTE_PIECES = [
+    pygame.image.load(os.path.join("assets", "sprites", "pieces", f"{img}.png"))
+    for img in PROMOTED_GOTE_PIECES_SPRITES
+]
+
 
 """ BOUNDS """
 TOP, BOTTOM = 0, 8
@@ -218,6 +243,5 @@ LEFT, RIGHT = 0, 8
 
 
 """ FONTS """
-
 FONT_1 = pygame.font.Font("assets/fonts/savior.ttf", 80)
 FONT_2 = pygame.font.Font("assets/fonts/savior.ttf", 50)
