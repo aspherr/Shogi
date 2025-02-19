@@ -1,7 +1,7 @@
 from piece import Piece
 
 class Pawn(Piece):
-    id = 1
+    id, promotion_id = 1, 1
 
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)

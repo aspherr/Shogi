@@ -2,7 +2,7 @@ from piece import Piece
 from const import TOP, BOTTOM, LEFT, RIGHT
 
 class Bishop(Piece):
-    id = 6
+    id, promotion_id = 6, 5
 
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)

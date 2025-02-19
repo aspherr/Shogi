@@ -2,7 +2,7 @@ from piece import Piece
 from const import TOP, BOTTOM, LEFT, RIGHT
 
 class Rook(Piece):
-    id = 7
+    id, promoted_id = 7, 6
 
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)

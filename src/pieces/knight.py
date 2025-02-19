@@ -2,7 +2,7 @@ from piece import Piece
 from const import TOP, BOTTOM, LEFT, RIGHT
 
 class Knight(Piece):
-    id = 3
+    id, promotion_id = 3, 3
 
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)

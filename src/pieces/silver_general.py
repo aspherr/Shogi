@@ -1,7 +1,7 @@
 from piece import Piece
 
 class SilverGeneral(Piece):
-    id = 4
+    id, promotion_id = 4, 4
 
     def __init__(self, rank, file, player) -> None:
         super().__init__(rank, file, player)

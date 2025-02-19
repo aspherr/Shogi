@@ -5,7 +5,9 @@ from const import (
     BOARD_Y,
     BOARD_TILE_SIZE,
     SENTE_PIECES,
+    PROMOTED_SENTE_PIECES,
     GOTE_PIECES,
+    PROMOTED_GOTE_PIECES,
     TOP,
     BOTTOM,
     LEFT,
@@ -26,13 +28,20 @@ class Piece:
         self.koma_selected = False
         self.is_king = False
         self.in_check = False
+        self.token_promoted = False
 
     def get_piece(self, board) -> pygame.Surface:
         if self.player == "sente":
-            piece = SENTE_PIECES[self.id - 1]  
+            if self.token_promoted:
+                piece = PROMOTED_SENTE_PIECES[self.promoted_id -1]
+            else:
+                piece = SENTE_PIECES[self.id - 1]  
 
         else:
-            piece = GOTE_PIECES[self.id - 1]  
+            if self.token_promoted:
+                piece = PROMOTED_SENTE_PIECES[self.promoted_id -1]
+            else:
+                piece = GOTE_PIECES[self.id - 1]  
 
         self.render_selection(board)
         return piece
